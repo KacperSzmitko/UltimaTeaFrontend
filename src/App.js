@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import ResetPasswordForm from "./components/ResetPasswordForm";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Routes, Route, Link } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <>
+              <LoginForm />
+              <RegisterForm />
+              <Link to="reset_password">Reset password</Link>
+            </>
+          }
+        />
+        <Route path="reset_password" element={<ResetPasswordForm/>} />
+        <Route path="app" element={<p> Main app </p>} />
+      </Routes>
     </div>
   );
 }
