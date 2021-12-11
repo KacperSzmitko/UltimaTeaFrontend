@@ -21,7 +21,7 @@ export default function LoginForm(props) {
   async function onSubmit(e) {
     e.preventDefault();
     let response = await dispach(login(email, password));
-    if (response.status === 200) navigate("app");
+    if (response.status === 200) navigate("app/make_tea");
     else console.log("Niezalogowano");
   }
 

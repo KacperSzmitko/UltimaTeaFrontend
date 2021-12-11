@@ -1,18 +1,26 @@
-import { LOGIN, REGISTER } from "../actions/types";
+import { LOGIN, LOGOUT, REGISTER } from "../actions/types";
 
 const initialState = {
-    data: "Dzień",
-}
+  token: localStorage.getItem("token"),
+  refresh: localStorage.getItem("refresh")
+};
 
-const reducer = function(state = initialState, action){
-    switch (action.type) {
-      case LOGIN:
-        return { ...state, token: action.payload };
-      case REGISTER:
-        return { ...state };
-      default:
-        return state;
-    } 
-}
+const reducer = function (state = initialState, action) {
+  switch (action.type) {
+    case LOGIN:
+      return {
+        ...state,
+        token: action.payload.token,
+        refresh: action.payload.refresh,
+        isLoged: true,
+      };
+    case REGISTER:
+      return { ...state };
+    case LOGOUT:
+      return { ...state, token: "", refresh: ""}
+    default:
+      return state;
+  }
+};
 
 export default reducer;
