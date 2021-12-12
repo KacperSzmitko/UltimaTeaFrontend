@@ -5,8 +5,8 @@ import Filters from "./Filters";
 function EditRecipes() {
   return (
     <div>
-        <Filters/>
-      <OwnRecipesList recipes_per_page={6}  />
+      <Filters />
+      <OwnRecipesList recipes_per_page={6} />
     </div>
   );
 }

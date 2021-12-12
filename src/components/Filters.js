@@ -3,12 +3,13 @@ import { Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { updateFilters } from "../actions/mainWindowsActions";
+import { useEffect } from "react";
 
-function Filters() {
-  const [recipeName, setRecipeName] = useState("");
-  const [teaType, setTeaType] = useState("");
-  const [ingredient1, setIngredient1] = useState("");
-  const [ingredient2, setIngredient2] = useState("");
+function Filters({customSubmit}) {
+  const [name, setRecipeName] = useState("");
+  const [teaType, setTeaType] = useState(-1);
+  const [ingredient1, setIngredient1] = useState(-1);
+  const [ingredient2, setIngredient2] = useState(-1);
   const [brewingTemperatureDown, setbrewingTemperatureDown] = useState(-1);
   const [brewingTemperatureUp, setbrewingTemperatureUp] = useState(-1);
   const [brewingTimeDown, setbrewingTimeDown] = useState(-1);
@@ -19,28 +20,48 @@ function Filters() {
   const teas = useSelector((state) => state.main.teas);
   const dispach = useDispatch();
 
-  function onSubmit(e) {
-    e.preventDefault();
-    const data = 
-      {
-        recipeName: recipeName,
-        teaType: teaType,
-        ingredient1: ingredient1,
-        ingredient2: ingredient2,
-        brewingTemperatureDown: brewingTemperatureDown,
-        brewingTemperatureUp: brewingTemperatureUp,
-        brewingTimeDown: brewingTimeDown,
-        brewingTimeUp: brewingTimeUp,
-        mixingTimeDown: mixingTimeDown,
-        mixingTimeUp: mixingTimeUp,
-      };
+  function onSubmit(e = "") {
+    if (e !== "")
+      e.preventDefault();
+    const data = {
+      name: name,
+      tea_type: teaType,
+      ingredient1: ingredient1,
+      ingredient2: ingredient2,
+      brewing_temperature_down: brewingTemperatureDown,
+      brewing_temperature_up: brewingTemperatureUp,
+      brewing_time_down: brewingTimeDown,
+      brewing_time_up: brewingTimeUp,
+      mixing_time_down: mixingTimeDown,
+      mixing_time_up: mixingTimeUp,
+    };
     dispach(updateFilters(data));
   }
+
+  function clearForm(e){
+    setRecipeName("");
+    setTeaType(-1);
+    setIngredient1(-1);
+    setIngredient2(-1);
+    setbrewingTemperatureDown(-1);
+    setbrewingTemperatureUp(-1);
+    setbrewingTimeDown(-1);
+    setbrewingTimeUp(-1);
+    setmixingTimeDown(-1);
+    setmixingTimeUp(-1);
+  }
+
+    useEffect(() => {
+      return () => {
+        clearForm();
+        onSubmit();
+      };
+    }, []);
 
   return (
     <div>
       Filtry
-      <Form onSubmit={(e) => onSubmit(e)}>
+      <Form onSubmit={(e) => onSubmit(e)} onReset={(e) => clearForm(e)} id="FiltersForm">
         <Form.Group className="mb-3" controlId="Login.PasswordInput">
           <Form.Label>Nazwa przepisu</Form.Label>
           <Form.Control
@@ -120,6 +141,12 @@ function Filters() {
         </Form.Group>
 
         <Button type="submit">Filtruj</Button>
+        <Button
+          type="button"
+          onClick={() => document.getElementById("FiltersForm").reset()}
+        >
+          Wyczyść filtry
+        </Button>
       </Form>
     </div>
   );

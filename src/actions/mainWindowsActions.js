@@ -4,7 +4,7 @@ import {
   FETCH_RECIPES,
   FETCH_TEAS,
   FETCH_INGREDIENTS,
-  UPDATE_FILTERS,
+  UPDATE_FILTERS
 } from "../actions/types";
 import { createConfig } from "./authActions";
 
@@ -35,7 +35,6 @@ const getUserRecipes = () => (dispach, getState) => {
   axios
     .get("/recipes/", config)
     .then((response) => {
-
       dispach({ type: FETCH_RECIPES, payload: response.data });
     })
     .catch((e) => console.log(e.response.data));
@@ -62,11 +61,32 @@ const getTeas = () => (dispach, getState) => {
 };
 
 const updateFilters = (data) => (dispach) => {
-    console.log("re");
   dispach({ type: UPDATE_FILTERS, payload: data });
+};
 
-}
-
+const getPublicRecipes =
+  (filters, url, recipes_per_page) => (dispach, getState) => {
+    let config = createConfig(getState().auth.token);
+    let response = "";
+    let params = {}
+    for (const [filterName, filterValue] of Object.entries(filters)){
+      if (filterValue !== -1 & filterValue!== "") params[filterName] = filterValue;
+    }
+    params.size = recipes_per_page;
+    config.params = params;
+      if (url !== "") {
+        response = axios
+          .get(url, config)
+          .then((response) => response.data)
+          .catch((e) => []);
+      } else {
+        response = axios
+          .get("/public_recipes/", config)
+          .then((response) => response.data)
+          .catch((e) => []);
+      }
+    return response;
+  };
 
 export {
   updateContainers,
@@ -74,4 +94,5 @@ export {
   getIngredients,
   getTeas,
   updateFilters,
+  getPublicRecipes,
 };
