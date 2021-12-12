@@ -18,7 +18,6 @@ const login = (email, password) => async (dispach) => {
   });
   localStorage.setItem("token", response.data.access);
   localStorage.setItem("refresh", response.data.refresh);
-  console.log(localStorage.getItem("token"));
   return response;
 };
 

@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Link } from "react-router-dom";
 import MainAppStatic from "./components/MainAppStatic";
 import MakeTea from "./components/MakeTea";
+import EditRecipes from "./components/EditRecipes";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
         <Route path="reset_password" element={<ResetPasswordForm />} />
         <Route path="app" element={<MainAppStatic />}>
           <Route path="make_tea" element={<MakeTea/>}></Route>
-          <Route path="edit_recipes" element={<p>Tr</p>}></Route>
+          <Route path="edit_recipes" element={<EditRecipes/>}></Route>
           <Route path="public_recipes"></Route>
           <Route path="edit_ingredients"></Route>
           <Route path="machine_status"></Route>

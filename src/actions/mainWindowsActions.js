@@ -1,5 +1,11 @@
 import axios from "axios";
-import { UPDATE_CONTAINERS, FETCH_RECIPES } from "../actions/types";
+import {
+  UPDATE_CONTAINERS,
+  FETCH_RECIPES,
+  FETCH_TEAS,
+  FETCH_INGREDIENTS,
+  UPDATE_FILTERS,
+} from "../actions/types";
 import { createConfig } from "./authActions";
 
 const updateContainers = () => async (dispach, getState) => {
@@ -25,14 +31,47 @@ const updateContainers = () => async (dispach, getState) => {
 };
 
 const getUserRecipes = () => (dispach, getState) => {
-  console.log("Done");
   let config = createConfig(getState().auth.token);
   axios
     .get("/recipes/", config)
     .then((response) => {
+
       dispach({ type: FETCH_RECIPES, payload: response.data });
     })
     .catch((e) => console.log(e.response.data));
 };
 
-export { updateContainers, getUserRecipes };
+const getIngredients = () => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .get("/ingredients/", config)
+    .then((response) => {
+      dispach({ type: FETCH_INGREDIENTS, payload: response.data });
+    })
+    .catch((e) => console.log(e.response.data));
+};
+
+const getTeas = () => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .get("/teas/", config)
+    .then((response) => {
+      dispach({ type: FETCH_TEAS, payload: response.data });
+    })
+    .catch((e) => console.log(e.response.data));
+};
+
+const updateFilters = (data) => (dispach) => {
+    console.log("re");
+  dispach({ type: UPDATE_FILTERS, payload: data });
+
+}
+
+
+export {
+  updateContainers,
+  getUserRecipes,
+  getIngredients,
+  getTeas,
+  updateFilters,
+};

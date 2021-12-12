@@ -1,4 +1,10 @@
-import { UPDATE_CONTAINERS, FETCH_RECIPES } from "../actions/types";
+import {
+  UPDATE_CONTAINERS,
+  FETCH_RECIPES,
+  FETCH_TEAS,
+  FETCH_INGREDIENTS,
+  UPDATE_FILTERS,
+} from "../actions/types";
 
 const initialState = {
   water_container: {},
@@ -7,7 +13,13 @@ const initialState = {
   ingredient_container1: {},
   ingredient_container2: {},
   fetched_recipes: false,
-  recipes: []
+  fetched_teas: false,
+  fetched_ingredients: false,
+  recipes: [],
+  own_recipes_filters: {},
+  public_recipes_filters: {},
+  ingredients: [],
+  teas: [],
 };
 
 const reducer = function (state = initialState, action) {
@@ -26,6 +38,23 @@ const reducer = function (state = initialState, action) {
         ...state,
         fetched_recipes: true,
         recipes: action.payload,
+      };
+    case FETCH_INGREDIENTS:
+      return {
+        ...state,
+        fetched_recipes : true,
+        ingredients: action.payload
+      }
+    case FETCH_TEAS:
+      return {
+        ...state,
+        fetched_teas : true,
+        teas: action.payload
+      }
+    case UPDATE_FILTERS:
+      return {
+        ...state,
+        own_recipes_filters: action.payload,
       };
     default:
       return state;
