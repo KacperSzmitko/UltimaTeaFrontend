@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { updateContainers } from "../actions/mainWindowsActions";
 import React, { useState } from "react";
 
+var classNames = require("classnames");
+
 function Containers() {
   const dispach = useDispatch();
   const [initUpdate, setInitUpdate] = useState(true);
@@ -20,8 +22,10 @@ function Containers() {
     return () => clearInterval(id);
   }, [dispach, initUpdate]);
 
+  const containersClasses = classNames("containers")
+
   return (
-    <div id="machine_containers">
+    <div id="machine_containers" className={containersClasses}>
       <ContainerItem id="water_container" containerName="water_container" />
       <ContainerItem id="tea_container1" containerName="tea_container1" />
       <ContainerItem id="tea_container2" containerName="tea_container2" />

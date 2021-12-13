@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { getPublicRecipes } from "../actions/mainWindowsActions";
 import { Button } from "react-bootstrap";
 
+var classNames = require("classnames");
+
 function PublicRecipesList({ recipes_per_page }) {
   const [currentPage, setCurrentPage] = useState(0);
   const filters = useSelector((state) => state.main.own_recipes_filters);

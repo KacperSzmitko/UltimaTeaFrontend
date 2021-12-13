@@ -3,6 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { login } from "../actions/authActions";
 
+var classNames = require("classnames");
+
 export class LoginForm extends Component {
 
     constructor(props){

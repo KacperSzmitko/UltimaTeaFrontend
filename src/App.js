@@ -11,7 +11,7 @@ import EditContainers from "./components/EditContainers";
 
 function App() {
   return (
-    <div className="container">
+    <div id="main_window">
       <Routes>
         <Route
           path="/"

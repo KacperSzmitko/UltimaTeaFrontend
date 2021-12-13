@@ -4,7 +4,9 @@ import {
   FETCH_RECIPES,
   FETCH_TEAS,
   FETCH_INGREDIENTS,
-  UPDATE_FILTERS
+  UPDATE_FILTERS,
+  UPDATE_TEA_CONTAINERS,
+  UPDATE_ING_CONTAINERS,
 } from "../actions/types";
 import { createConfig } from "./authActions";
 
@@ -20,10 +22,26 @@ const updateContainers = () => async (dispach, getState) => {
     .then((response) => {
       let data = {
         water_container: { ammount: water_container },
-        tea_container1: response.data.tea_containers[0],
-        tea_container2: response.data.tea_containers[1],
-        ingredient_container1: response.data.ingredient_containers[0],
-        ingredient_container2: response.data.ingredient_containers[1],
+        tea_container1:
+          response.data.tea_containers[0].container_number <
+          response.data.tea_containers[1].container_number
+            ? response.data.tea_containers[0]
+            : response.data.tea_containers[1],
+        tea_container2:
+          response.data.tea_containers[0].container_number >
+          response.data.tea_containers[1].container_number
+            ? response.data.tea_containers[0]
+            : response.data.tea_containers[1],
+        ingredient_container1:
+          response.data.ingredient_containers[0].container_number <
+          response.data.ingredient_containers[1].container_number
+            ? response.data.ingredient_containers[0]
+            : response.data.ingredient_containers[1],
+        ingredient_container2:
+          response.data.ingredient_containers[0].container_number >
+          response.data.ingredient_containers[1].container_number
+            ? response.data.ingredient_containers[0]
+            : response.data.ingredient_containers[1],
       };
       dispach({ type: UPDATE_CONTAINERS, payload: data });
     })
@@ -68,24 +86,61 @@ const getPublicRecipes =
   (filters, url, recipes_per_page) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
     let response = "";
-    let params = {}
-    for (const [filterName, filterValue] of Object.entries(filters)){
-      if (filterValue !== -1 & filterValue!== "") params[filterName] = filterValue;
+    let params = {};
+    for (const [filterName, filterValue] of Object.entries(filters)) {
+      if ((filterValue !== -1) & (filterValue !== ""))
+        params[filterName] = filterValue;
     }
     params.size = recipes_per_page;
     config.params = params;
-      if (url !== "") {
-        response = axios
-          .get(url, config)
-          .then((response) => response.data)
-          .catch((e) => []);
-      } else {
-        response = axios
-          .get("/public_recipes/", config)
-          .then((response) => response.data)
-          .catch((e) => []);
-      }
+    if (url !== "") {
+      response = axios
+        .get(url, config)
+        .then((response) => response.data)
+        .catch((e) => []);
+    } else {
+      response = axios
+        .get("/public_recipes/", config)
+        .then((response) => response.data)
+        .catch((e) => []);
+    }
     return response;
+  };
+
+const changeContainers =
+  (tea_containers, ing_containers) => (dispach, getState) => {
+    let config = createConfig(getState().auth.token);
+    for (const tea_container of tea_containers) {
+        axios
+          .put(
+            `/machine/containers/tea/${tea_container.id}/`,
+            { tea_id: tea_container.tea },
+            config
+          )
+          .then((r) =>
+            dispach({
+              type: UPDATE_TEA_CONTAINERS,
+              payload: { id: tea_container.id, tea: r.data },
+            })
+          )
+          .catch((e) => e.response.data);
+    }
+
+    for (const ing_container of ing_containers) {
+      axios
+        .put(
+          `/machine/containers/ingredient/${ing_container.id}/`,
+          { ingredient_id: ing_container.ing },
+          config
+        )
+        .then((r) =>
+          dispach({
+            type: UPDATE_ING_CONTAINERS,
+            payload: { id: ing_container.id, ing: r.data },
+          })
+        )
+        .catch((e) => e.response.data);
+    }
   };
 
 export {
@@ -95,4 +150,5 @@ export {
   getTeas,
   updateFilters,
   getPublicRecipes,
+  changeContainers,
 };

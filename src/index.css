@@ -1,13 +1,147 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Roboto', sans-serif !important;
+  width: 100%;
+  height: 100%;
+  background-color: green !important;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+html {
+    height: 100%;
+}
+
+#main_window {
+    margin: 0; 
+    position: absolute; 
+    top: 50%; left: 50%; 
+    -ms-transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%);
+    width: 87%;
+    height: 91%;
+    background-color: rgb(241, 241, 241);
+
+}
+
+#app_container{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#containers_row{                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+  height: 12%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+#main_row{
+  display: flex;
+  height: 100%;
+}
+
+#main_content{
+  display: flex;
+  flex: 3;
+}
+
+#navbar_container{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#nav_bar{
+  height: 90%;
+}
+
+#recipes_list_container{
+  display: flex;
+  width: 100%;
+  height: 80%;
+}
+
+.make_tea_recipes{
+  display: flex;
+  flex: 2;
+  justify-content: center;
+  align-items: center;
+}
+
+.make_tea_arrow{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#recipes_with_btn{
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+#submit_tea{
+  text-align: center;
+  width: 100%;
+}
+
+.recipe {
+  width: 33.33%;
+
+}
+.bar {
+  text-align: right;
+  color: white;
+  height: 100%;
+}
+
+.water_bar {
+  background-color : rgb(61, 61, 199);
+}
+
+.tea_bar {
+  background-color: green;
+}
+
+.ing_bar {
+  background-color: rgb(110, 39, 39);
+}
+
+.container_status{
+  display: inline-block;
+  width: 14%;
+  margin-right: 2%;
+
+}
+
+
+
+.fixed_bar{
+  height: 30%;
+  width: 100%;
+  border-style: solid;
+  border-radius: 5px;
+  display: flex;
+}
+
+.bar_name{
+  display: inline-block;
+  font-size: 1.2 vw;
+  height: 20%;
+}
+
+#machine_containers{
+  display: flex;
+  width: 75%;
+  justify-content: flex-end;
+}
+
+.nav_item{
+  text-align: center;
+  margin-bottom: 3%;
+}
+
+.nav_button{
+  width: 90%;
 }

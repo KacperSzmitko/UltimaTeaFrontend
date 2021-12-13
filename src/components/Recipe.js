@@ -1,10 +1,11 @@
 import React from "react";
 
-function Recipe(props) {
-  const recipe = props.recipe;
+
+
+function Recipe({id, classes, recipe}) {
 
   return (
-    <div id={"recipe_" + props.id}>
+    <div id={"recipe_" + id} className={classes}>
       <br />
       <br />
       <div>{recipe.recipe_name}</div>

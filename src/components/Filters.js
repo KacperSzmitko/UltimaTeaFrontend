@@ -5,6 +5,8 @@ import { useState } from "react";
 import { updateFilters } from "../actions/mainWindowsActions";
 import { useEffect } from "react";
 
+var classNames = require("classnames");
+
 function Filters({customSubmit}) {
   const [name, setRecipeName] = useState("");
   const [teaType, setTeaType] = useState(-1);
@@ -62,7 +64,7 @@ function Filters({customSubmit}) {
     <div>
       Filtry
       <Form onSubmit={(e) => onSubmit(e)} onReset={(e) => clearForm(e)} id="FiltersForm">
-        <Form.Group className="mb-3" controlId="Login.PasswordInput">
+        <Form.Group className="mb-3" controlId="Login.RecipeNameInput">
           <Form.Label>Nazwa przepisu</Form.Label>
           <Form.Control
             type="text"
