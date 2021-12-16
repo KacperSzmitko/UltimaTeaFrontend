@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getUserRecipes, getIngredients, getTeas } from "../actions/mainWindowsActions";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 export default function MainAppStatic() {
   const dispach = useDispatch();
@@ -32,12 +32,13 @@ export default function MainAppStatic() {
         </div>
         <div id="main_row">
           <div id="navbar_container">
-          <NavBar />
-          <Logout />
+            <NavBar />
+            <Logout />
           </div>
+          <div id="navbar_line"></div>
           <div id="main_content">
-          <Outlet />
-          </ div>
+            <Outlet />
+          </div>
         </div>
       </PrivateRoute>
     </div>

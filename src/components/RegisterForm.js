@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { register } from "../actions/authActions";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 export class RegisterForm extends Component {
   constructor(props) {

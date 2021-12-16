@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, LOGOUT } from "./types";
+import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN } from "./types";
 import axios from "axios";
 
 const createConfig = (token) => ({
@@ -38,10 +38,35 @@ const check_token = (data) => {
     .catch((e) => e.response);
 };
 
+const refresh_token = (data) => (dispach) => {
+  axios
+    .post("/token/refresh/", data)
+    .then((response) =>{
+      dispach({
+        type: REFRESH_TOKEN,
+        payload: {
+          token: response.data.access,
+          refresh: response.data.refresh,
+        },
+      });   
+      localStorage.setItem("token", response.data.access);
+      localStorage.setItem("refresh", response.data.refresh);}
+    )
+    .catch((e) => {;console.log(e.response.data)});
+};
+
 const logout = () => (dispach) => {
   localStorage.setItem("token", "");
   localStorage.setItem("refresh", "");
-  dispach({type: LOGOUT});
-}
+  dispach({ type: LOGOUT });
+};
 
-export { login, register, reset_password, createConfig, check_token, logout };
+export {
+  login,
+  register,
+  reset_password,
+  createConfig,
+  check_token,
+  logout,
+  refresh_token,
+};

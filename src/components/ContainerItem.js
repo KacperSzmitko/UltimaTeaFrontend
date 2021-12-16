@@ -1,15 +1,12 @@
 import { useSelector } from "react-redux";
 import React, { useState } from "react";
 import { useEffect } from "react";
-
+import {MAX_TEA, MAX_ING, MAX_WATER} from "../constans/Constans"
 var classNames = require("classnames");
 
-function ContainerItem({ id, containerName }) {
+function ContainerItem({ id, containerName, edit=false }) {
   const container = useSelector((state) => state.main[containerName]);
   const [name, setName] = useState("");
-  const MAX_TEA = 200;
-  const MAX_ING = 200;
-  const MAX_WATER = 1000;
   const [fill, setFill] = useState(0)
 
   useEffect(() => {
@@ -25,20 +22,24 @@ function ContainerItem({ id, containerName }) {
     }
   }, [container]);
 
-  let barClasses = classNames("bar", {
+  let barClasses = classNames({
+    edit_bar : edit,
     water_bar: id.includes("water"),
     tea_bar: id.includes("tea"),
     ing_bar: id.includes("ingredient"),
+  },"bar");
+
+  let fixedBarClasses = classNames({
+    fixed_bar: !edit,
+    edit_container_fixed_bar: edit,
   });
 
-  let fixedBarClasses = classNames("fixed_bar");
-
-  let containerClasses = classNames("container_status");
+  let containerClasses = classNames({container_status: !edit, edit_container_status: edit});
 
   let textClasses = classNames("bar_name")
 
   return (
-    <div id={id} className={containerClasses}>
+    <div id={id} className={containerClasses}>   
       <div className={fixedBarClasses}>
         <div
           id={id + "_bar"}
@@ -46,7 +47,7 @@ function ContainerItem({ id, containerName }) {
           style={{ width: `${fill}%` }}
         ></div>
       </div>
-      <div className={textClasses}>{name}</div>
+      {!edit ? <div className={textClasses}>{name}</div>: null }
     </div>
   );
 }

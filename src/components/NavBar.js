@@ -1,7 +1,7 @@
 import React from "react";
 import NavItem from "./NavItem";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 export default function NavBar() {
   return (

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { updateFilters } from "../actions/mainWindowsActions";
 import { useEffect } from "react";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 function Filters({customSubmit}) {
   const [name, setRecipeName] = useState("");

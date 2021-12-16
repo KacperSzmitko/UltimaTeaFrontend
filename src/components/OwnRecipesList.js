@@ -1,9 +1,10 @@
 import React from "react";
 import Recipe from "./Recipe";
-import { useSelector, shallowEqual } from "react-redux";
+import { useSelector, shallowEqual, useDispatch } from "react-redux";
 import { useState } from "react";
-import { Button } from "react-bootstrap";
-
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { IconContext } from "react-icons";
+import { editSelectedRecipe } from "../actions/mainWindowsActions";
 var classNames = require("classnames");
 
 export function applyFilters(recipes, filters) {
@@ -52,72 +53,87 @@ export function applyFilters(recipes, filters) {
   return recipes;
 }
 
-function OwnRecipesList({ recipes_per_page, is_favourite = false, first_blank = true }) {
+function OwnRecipesList({
+  recipes_per_page,
+  is_favourite = false,
+  first_blank = true,
+}) {
   const [currentPage, setCurrentPage] = useState(0);
   const filters = useSelector((state) => state.main.own_recipes_filters);
   const recipes = useSelector(
     (state) =>
       is_favourite
-        ? state.main.recipes
-            .slice(
-              currentPage * recipes_per_page,
-              (currentPage + 1) * recipes_per_page
-            )
+        ? state.main.recipes.slice(
+            currentPage * recipes_per_page,
+            (currentPage + 1) * recipes_per_page
+          )
         : applyFilters(state.main.recipes, filters).slice(
             currentPage === 0 ? 0 : currentPage * recipes_per_page,
             currentPage === 0 ? 5 : (currentPage + 1) * recipes_per_page
           ),
     shallowEqual
   );
-  const recipes_count = useSelector((state) => state.main.recipes.length
-  );
+  const recipes_count = useSelector((state) => state.main.recipes.length);
+  const dispach = useDispatch();
 
   function nextRecipes() {
+    dispach(editSelectedRecipe(null));
     if (recipes_count > (currentPage + 1) * recipes_per_page + 1 - 1)
       setCurrentPage(currentPage + 1);
   }
 
   function prevRecipes() {
+    dispach(editSelectedRecipe(null));
     if (currentPage - 1 >= 0) setCurrentPage(currentPage - 1);
   }
 
-  function makeTea(){
-    return 0;
-  }
-
-  const arrowClasses = classNames({"make_tea_arrow": !first_blank})
-  const recipesClasses = classNames({ "make_tea_recipes": !first_blank});
-  const leftBtnClasses = classNames({ "make_tea_left_arrow_btn" : !first_blank });
-  const rightBtnClasses = classNames({ "make_tea_right_arrow_btn" : !first_blank });
-  const recipeClasses = classNames("recipe")
-
+  const arrowClasses = classNames({ make_tea_arrow_conatiner: !first_blank });
+  const recipesClasses = classNames({ make_tea_recipes: !first_blank });
+  const leftBtnClasses = classNames({
+    make_tea_left_arrow_btn: !first_blank,
+    make_tea_arrow: !first_blank,
+  });
+  const rightBtnClasses = classNames({
+    make_tea_right_arrow_btn: !first_blank,
+    make_tea_arrow: !first_blank,
+  });
 
   return (
     <div id="recipes_list_container">
       <div id="left_arrow" className={arrowClasses}>
-        <Button className={leftBtnClasses} onClick={() => prevRecipes()}>
-          {" "}
-          Prev
-        </Button>
+        <IconContext.Provider
+          value={{
+            className: leftBtnClasses,
+          }}
+        >
+          <div>
+            <IoIosArrowBack size="60" onClick={() => prevRecipes()} />
+          </div>
+        </IconContext.Provider>
       </div>
       <div id="recipes" className={recipesClasses}>
         {currentPage === 0 && first_blank ? (
           <div id="BlankRecipe"> Blank</div>
         ) : null}
-        {recipes.map((recipe) => (
+        {recipes.map((recipe, index) => (
           <Recipe
-            classes={recipeClasses}
             id={recipe.id}
             key={recipe.id}
             recipe={recipe}
+            index={index}
           />
         ))}
       </div>
       <div id="right_arrow" className={arrowClasses}>
-        <Button className={rightBtnClasses} onClick={() => nextRecipes()}>
-          {" "}
-          Next{" "}
-        </Button>
+        <IconContext.Provider
+          value={{
+            className: rightBtnClasses,
+          }}
+        >
+          <div>
+            <IoIosArrowForward size="60" onClick={() => nextRecipes()} />
+          </div>
+        </IconContext.Provider>
       </div>
     </div>
   );

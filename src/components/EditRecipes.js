@@ -2,7 +2,7 @@ import React from "react";
 import OwnRecipesList from "./OwnRecipesList";
 import Filters from "./Filters";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 function EditRecipes() {
   return (

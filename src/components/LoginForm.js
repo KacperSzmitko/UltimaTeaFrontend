@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../actions/authActions";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 export default function LoginForm(props) {
   const [email, setEmail] = useState("");

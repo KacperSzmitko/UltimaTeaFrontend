@@ -6,6 +6,8 @@ import {
   UPDATE_FILTERS,
   UPDATE_TEA_CONTAINERS,
   UPDATE_ING_CONTAINERS,
+  MAKE_TEA,
+  EDIT_SELECTED_RECIPE,
 } from "../actions/types";
 
 const initialState = {
@@ -42,6 +44,8 @@ const initialState = {
   public_recipes_filters: {},
   ingredients: [],
   teas: [],
+  tea_making_status: 0,
+  selected_recipe: null,
 };
 
 const reducer = function (state = initialState, action) {
@@ -95,7 +99,7 @@ const reducer = function (state = initialState, action) {
           ...state,
           ingredient_container1: {
             ...state.ingredient_container1,
-            tea: action.payload.ing,
+            ingredient: action.payload.ing,
           },
         };
       else
@@ -103,9 +107,19 @@ const reducer = function (state = initialState, action) {
           ...state,
           ingredient_container2: {
             ...state.ingredient_container2,
-            tea: action.payload.ing,
+            ingredient: action.payload.ing,
           },
         };
+    case MAKE_TEA:
+      return {
+        ...state,
+        tea_making_status: 1
+      };
+    case EDIT_SELECTED_RECIPE:
+      return {
+        ...state,
+        selected_recipe: action.payload,
+      };
     default:
       return state;
   }

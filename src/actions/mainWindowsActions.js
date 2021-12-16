@@ -7,16 +7,22 @@ import {
   UPDATE_FILTERS,
   UPDATE_TEA_CONTAINERS,
   UPDATE_ING_CONTAINERS,
+  EXPIRED_TOKEN,
+  MAKE_TEA,
+  EDIT_SELECTED_RECIPE,
 } from "../actions/types";
-import { createConfig } from "./authActions";
+import { createConfig, refresh_token } from "./authActions";
 
 const updateContainers = () => async (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   let water_container = await axios
     .get("/machine/", config)
     .then((response) => response.data[0].water_container_weight)
-    .catch((e) => console.log(e.response.data));
-
+    .catch((e) => {
+      dispach({ type: EXPIRED_TOKEN });
+      dispach(refresh_token({ refresh: getState().auth.refresh }));
+    });
+  if (water_container === undefined) return;
   axios
     .get("/machine/containers/", config)
     .then((response) => {
@@ -45,7 +51,13 @@ const updateContainers = () => async (dispach, getState) => {
       };
       dispach({ type: UPDATE_CONTAINERS, payload: data });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 const getUserRecipes = () => (dispach, getState) => {
@@ -55,7 +67,13 @@ const getUserRecipes = () => (dispach, getState) => {
     .then((response) => {
       dispach({ type: FETCH_RECIPES, payload: response.data });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 const getIngredients = () => (dispach, getState) => {
@@ -65,7 +83,13 @@ const getIngredients = () => (dispach, getState) => {
     .then((response) => {
       dispach({ type: FETCH_INGREDIENTS, payload: response.data });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 const getTeas = () => (dispach, getState) => {
@@ -75,7 +99,13 @@ const getTeas = () => (dispach, getState) => {
     .then((response) => {
       dispach({ type: FETCH_TEAS, payload: response.data });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 const updateFilters = (data) => (dispach) => {
@@ -110,27 +140,34 @@ const getPublicRecipes =
 const changeContainers =
   (tea_containers, ing_containers) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
+    let requests = []
     for (const tea_container of tea_containers) {
-        axios
-          .put(
-            `/machine/containers/tea/${tea_container.id}/`,
-            { tea_id: tea_container.tea },
-            config
-          )
-          .then((r) =>
-            dispach({
-              type: UPDATE_TEA_CONTAINERS,
-              payload: { id: tea_container.id, tea: r.data },
-            })
-          )
-          .catch((e) => e.response.data);
+      requests.push(axios
+        .put(
+          `/machine/containers/tea/${tea_container.id}/`,
+          { id: tea_container.tea },
+          config
+        )
+        .then((r) =>
+          dispach({
+            type: UPDATE_TEA_CONTAINERS,
+            payload: { id: tea_container.id, tea: r.data },
+          })
+        )
+        .catch((e) => {
+          if (e.response.status === 401 && !getState().auth.tokenExpired) {
+            dispach({ type: EXPIRED_TOKEN });
+            dispach(refresh_token({ refresh: getState().auth.refresh }));
+          }
+          console.log(e.response.data);
+        }))
     }
 
     for (const ing_container of ing_containers) {
-      axios
+      requests.push(axios
         .put(
           `/machine/containers/ingredient/${ing_container.id}/`,
-          { ingredient_id: ing_container.ing },
+          { id: ing_container.ing },
           config
         )
         .then((r) =>
@@ -139,9 +176,28 @@ const changeContainers =
             payload: { id: ing_container.id, ing: r.data },
           })
         )
-        .catch((e) => e.response.data);
+        .catch((e) => {
+          if (e.response.status === 401 && !getState().auth.tokenExpired) {
+            dispach({ type: EXPIRED_TOKEN });
+            dispach(refresh_token({ refresh: getState().auth.refresh }));
+          }
+          console.log(e.response.data);
+        }))
     }
+    axios.all(requests);
   };
+
+const makeTea = (recipe_id) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .post("/send_recipe/", { id: recipe_id }, config)
+    .then(() => dispach({ type: MAKE_TEA }))
+    .catch((e) => console.log(e.response.data));
+};
+
+const editSelectedRecipe = (recipe_id) => (dispach) => {
+  dispach({ type: EDIT_SELECTED_RECIPE, payload: recipe_id });
+};
 
 export {
   updateContainers,
@@ -151,4 +207,6 @@ export {
   updateFilters,
   getPublicRecipes,
   changeContainers,
+  makeTea,
+  editSelectedRecipe,
 };

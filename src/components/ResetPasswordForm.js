@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 
-var classNames = require("classnames");
+//var classNames = require("classnames");
 
 export default function ResetPasswordForm(props) {
     const [email, setEmail] = useState('');
