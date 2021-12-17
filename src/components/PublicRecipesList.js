@@ -3,9 +3,10 @@ import Recipe from "./Recipe";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { getPublicRecipes } from "../actions/mainWindowsActions";
-import { Button } from "react-bootstrap";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { IconContext } from "react-icons";
 
-//var classNames = require("classnames");
+var classNames = require("classnames");
 
 function PublicRecipesList({ recipes_per_page }) {
   const [currentPage, setCurrentPage] = useState(0);
@@ -52,17 +53,40 @@ function PublicRecipesList({ recipes_per_page }) {
     }
   }
 
+  const arrowClasses = classNames("edit_arrow_conatiner");
+  const recipesClasses = classNames("edit_recipes_list");
+  const leftBtnClasses = classNames("edit_left_arrow_btn", "edit_arrow");
+  const rightBtnClasses = classNames("edit_right_arrow_btn", "edit_arrow");
+
   return (
-    <div>
-      {recipes.map((recipe) => (
-        <Recipe id={recipe.id} key={recipe.id} recipe={recipe} />
-      ))}
-      <Button id="leftArrow" onClick={() => prevRecipes()}>
-        Prev
-      </Button>
-      <Button id="rightArrow" onClick={() => nextRecipes()}>
-        Next
-      </Button>
+    <div className="recipes_list_container">
+      <div id="left_arrow" className={arrowClasses}>
+        <IconContext.Provider
+          value={{
+            className: leftBtnClasses,
+          }}
+        >
+          <div className="edit_arrow_container">
+            <IoIosArrowBack size="50" onClick={() => prevRecipes()} />
+          </div>
+        </IconContext.Provider>
+      </div>
+      <div id="recipes" className={recipesClasses}>
+        {recipes.map((recipe, index) => (
+          <Recipe id={recipe.id} key={recipe.id} recipe={recipe} index={index} edit={true} />
+        ))}
+      </div>
+      <div id="right_arrow" className={arrowClasses}>
+        <IconContext.Provider
+          value={{
+            className: rightBtnClasses,
+          }}
+        >
+          <div className="edit_arrow_container">
+            <IoIosArrowForward size="50" onClick={() => nextRecipes()} />
+          </div>
+        </IconContext.Provider>
+      </div>
     </div>
   );
 }

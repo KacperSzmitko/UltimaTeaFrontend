@@ -1,14 +1,14 @@
 import React from "react";
-import OwnRecipesList from "./OwnRecipesList";
+import RecipesList from "./RecipesList";
 import Filters from "./Filters";
 
 //var classNames = require("classnames");
 
 function EditRecipes() {
   return (
-    <div>
+    <div className="view_with_filters">
       <Filters />
-      <OwnRecipesList recipes_per_page={6} />
+      <RecipesList recipes_per_page={6} first_blank={true} edit={true} />
     </div>
   );
 }

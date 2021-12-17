@@ -53,24 +53,14 @@ export function applyFilters(recipes, filters) {
   return recipes;
 }
 
-function OwnRecipesList({
-  recipes_per_page,
-  is_favourite = false,
-  first_blank = true,
-}) {
+function OwnRecipesList({ recipes_per_page }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const filters = useSelector((state) => state.main.own_recipes_filters);
   const recipes = useSelector(
     (state) =>
-      is_favourite
-        ? state.main.recipes.slice(
-            currentPage * recipes_per_page,
-            (currentPage + 1) * recipes_per_page
-          )
-        : applyFilters(state.main.recipes, filters).slice(
-            currentPage === 0 ? 0 : currentPage * recipes_per_page,
-            currentPage === 0 ? 5 : (currentPage + 1) * recipes_per_page
-          ),
+      state.main.recipes.slice(
+        currentPage * recipes_per_page,
+        (currentPage + 1) * recipes_per_page
+      ),
     shallowEqual
   );
   const recipes_count = useSelector((state) => state.main.recipes.length);
@@ -87,16 +77,10 @@ function OwnRecipesList({
     if (currentPage - 1 >= 0) setCurrentPage(currentPage - 1);
   }
 
-  const arrowClasses = classNames({ make_tea_arrow_conatiner: !first_blank });
-  const recipesClasses = classNames({ make_tea_recipes: !first_blank });
-  const leftBtnClasses = classNames({
-    make_tea_left_arrow_btn: !first_blank,
-    make_tea_arrow: !first_blank,
-  });
-  const rightBtnClasses = classNames({
-    make_tea_right_arrow_btn: !first_blank,
-    make_tea_arrow: !first_blank,
-  });
+  const arrowClasses = classNames("make_tea_arrow_conatiner");
+  const recipesClasses = classNames("make_tea_recipes");
+  const leftBtnClasses = classNames("make_tea_left_arrow_btn", "make_tea_arrow");
+  const rightBtnClasses = classNames("make_tea_right_arrow_btn", "make_tea_arrow");
 
   return (
     <div id="recipes_list_container">
@@ -112,9 +96,6 @@ function OwnRecipesList({
         </IconContext.Provider>
       </div>
       <div id="recipes" className={recipesClasses}>
-        {currentPage === 0 && first_blank ? (
-          <div id="BlankRecipe"> Blank</div>
-        ) : null}
         {recipes.map((recipe, index) => (
           <Recipe
             id={recipe.id}

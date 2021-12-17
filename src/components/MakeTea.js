@@ -30,6 +30,7 @@ function MakeTea() {
         recipes_per_page={3}
         is_favourite={true}
         first_blank={false}
+        is_main_page={true}
       />
       <div id="submit_tea" className={submitBtnContainerClasses}>
         <Button

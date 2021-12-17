@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 //var classNames = require("classnames");
 
-function Filters({customSubmit}) {
+function Filters({ customSubmit }) {
   const [name, setRecipeName] = useState("");
   const [teaType, setTeaType] = useState(-1);
   const [ingredient1, setIngredient1] = useState(-1);
@@ -23,8 +23,7 @@ function Filters({customSubmit}) {
   const dispach = useDispatch();
 
   function onSubmit(e = "") {
-    if (e !== "")
-      e.preventDefault();
+    if (e !== "") e.preventDefault();
     const data = {
       name: name,
       tea_type: teaType,
@@ -40,7 +39,7 @@ function Filters({customSubmit}) {
     dispach(updateFilters(data));
   }
 
-  function clearForm(e){
+  function clearForm(e) {
     setRecipeName("");
     setTeaType(-1);
     setIngredient1(-1);
@@ -53,102 +52,146 @@ function Filters({customSubmit}) {
     setmixingTimeUp(-1);
   }
 
-    useEffect(() => {
-      return () => {
-        clearForm();
-        onSubmit();
-      };
-    }, []);
+  useEffect(() => {
+    return () => {
+      clearForm();
+      onSubmit();
+    };
+  }, []);
 
   return (
-    <div>
-      Filtry
-      <Form onSubmit={(e) => onSubmit(e)} onReset={(e) => clearForm(e)} id="FiltersForm">
-        <Form.Group className="mb-3" controlId="Login.RecipeNameInput">
-          <Form.Label>Nazwa przepisu</Form.Label>
-          <Form.Control
-            type="text"
-            onChange={(e) => setRecipeName(e.target.value)}
-          />
-        </Form.Group>
+    <div id="filters_container">
+      <div id="filters_title">Filtry</div>
+      <Form
+        onSubmit={(e) => onSubmit(e)}
+        onReset={(e) => clearForm(e)}
+        id="filters_forms"
+      >
+        <div id="filters_inputs">
+          <Form.Group
+            className="filters_input"
+            controlId="Login.RecipeNameInput"
+          >
+            <Form.Label className="filter_label">Nazwa przepisu</Form.Label>
+            <Form.Control
+              type="text"
+              onChange={(e) => setRecipeName(e.target.value)}
+            />
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.TeaInput">
-          <Form.Select onChange={(e) => setTeaType(e.target.value)}>
-            <option value={null}> </option>
-            {teas.map((tea) => (
-              <option value={tea.id} key={tea.id}>
-                {" "}
-                {tea.tea_name}{" "}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+          <Form.Group className="filters_input" controlId="OwnRecipes.TeaInput">
+            <Form.Label className="filter_label">Herbata</Form.Label>
+            <Form.Select onChange={(e) => setTeaType(e.target.value)}>
+              <option value={null}> </option>
+              {teas.map((tea) => (
+                <option value={tea.id} key={tea.id}>
+                  {" "}
+                  {tea.tea_name}{" "}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.Ingredient1Input">
-          <Form.Select onChange={(e) => setIngredient1(e.target.value)}>
-            <option value={null}> </option>
-            {ingredients.map((ingredient) => (
-              <option value={ingredient.id} key={ingredient.id}>
-                {ingredient.ingredient_name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.Ingredient1Input"
+          >
+            <Form.Label className="filter_label">Składnik #1</Form.Label>
+            <Form.Select onChange={(e) => setIngredient1(e.target.value)}>
+              <option value={null}> </option>
+              {ingredients.map((ingredient) => (
+                <option value={ingredient.id} key={ingredient.id}>
+                  {ingredient.ingredient_name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.Ingredient2Input">
-          <Form.Select onChange={(e) => setIngredient2(e.target.value)}>
-            <option value={null}> </option>
-            {ingredients.map((ingredient) => (
-              <option value={ingredient.id} key={ingredient.id}>
-                {ingredient.ingredient_name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.Ingredient2Input"
+          >
+            <Form.Label className="filter_label">Składnik #2</Form.Label>
+            <Form.Select onChange={(e) => setIngredient2(e.target.value)}>
+              <option value={null}> </option>
+              {ingredients.map((ingredient) => (
+                <option value={ingredient.id} key={ingredient.id}>
+                  {ingredient.ingredient_name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.BrewingTemperature">
-          <Form.Label>Temperatura parzenia</Form.Label>
-          <Form.Control
-            type="number"
-            onChange={(e) => setbrewingTemperatureDown(e.target.value)}
-          />
-          <Form.Control
-            type="number"
-            onChange={(e) => setbrewingTemperatureUp(e.target.value)}
-          />
-        </Form.Group>
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.BrewingTemperature"
+          >
+            <Form.Label className="filter_label">
+              Temperatura parzenia
+            </Form.Label>
+            <div className="range_input">
+              <Form.Control
+                type="number"
+                onChange={(e) => setbrewingTemperatureDown(e.target.value)}
+              />
+              <div id="range-separator">- </div>
+              <Form.Control
+                type="number"
+                onChange={(e) => setbrewingTemperatureUp(e.target.value)}
+              />
+              <div className="filter_unit">℃</div>
+            </div>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.BrewingTime">
-          <Form.Label>Czas parzenia</Form.Label>
-          <Form.Control
-            type="number"
-            onChange={(e) => setbrewingTimeDown(e.target.value)}
-          />
-          <Form.Control
-            type="number"
-            onChange={(e) => setbrewingTimeUp(e.target.value)}
-          />
-        </Form.Group>
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.BrewingTime"
+          >
+            <Form.Label className="filter_label">Czas parzenia</Form.Label>
+            <div className="range_input">
+              <Form.Control
+                type="number"
+                onChange={(e) => setbrewingTimeDown(e.target.value)}
+              />
+              <div id="range-separator">- </div>
+              <Form.Control
+                type="number"
+                onChange={(e) => setbrewingTimeUp(e.target.value)}
+              />
+              <div className="filter_unit second">s</div>
+            </div>
+          </Form.Group>
 
-        <Form.Group className="mb-3" controlId="OwnRecipes.MixingTime">
-          <Form.Label>Czas mieszania</Form.Label>
-          <Form.Control
-            type="number"
-            onChange={(e) => setmixingTimeDown(e.target.value)}
-          />
-          <Form.Control
-            type="number"
-            onChange={(e) => setmixingTimeUp(e.target.value)}
-          />
-        </Form.Group>
-
-        <Button type="submit">Filtruj</Button>
-        <Button
-          type="button"
-          onClick={() => document.getElementById("FiltersForm").reset()}
-        >
-          Wyczyść filtry
-        </Button>
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.MixingTime"
+          >
+            <Form.Label className="filter_label">Czas mieszania</Form.Label>
+            <div className="range_input">
+              <Form.Control
+                type="number"
+                onChange={(e) => setmixingTimeDown(e.target.value)}
+              />
+              <div id="range-separator">- </div>
+              <Form.Control
+                type="number"
+                onChange={(e) => setmixingTimeUp(e.target.value)}
+              />
+              <div className="filter_unit second">s</div>
+            </div>
+          </Form.Group>
+        </div>
+        <div id="filters_btns">
+          <Button type="submit" id="submit_filters_btn">
+            Filtruj
+          </Button>
+          <Button
+            type="button"
+            onClick={() => document.getElementById("filters_forms").reset()}
+          >
+            Resetuj
+          </Button>
+        </div>
       </Form>
     </div>
   );

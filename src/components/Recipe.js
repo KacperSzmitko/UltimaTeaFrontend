@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 var classNames = require("classnames");
 
-function Recipe({ id, recipe, index }) {
+function Recipe({ id, recipe, index, first_blank = false, edit= false }) {
   const selectedRecipe = useSelector((state) => state.main.selected_recipe);
   const dispach = useDispatch();
 
@@ -32,10 +32,11 @@ function Recipe({ id, recipe, index }) {
   const recipeMainSectionClasses = classNames("recipe_main_section");
   const recipeClasses = classNames(
     {
-      mid_recipe: index === 1 || index === 4,
+      edit_recipe: edit,
+      mid_recipe: first_blank ? (index === 0 || index === 3)  :(index === 1 || index === 4),
       selected_recipe: selectedRecipe === id,
+      recipe: !edit
     },
-    "recipe"
   );
 
   return (

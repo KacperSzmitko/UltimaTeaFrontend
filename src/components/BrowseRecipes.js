@@ -7,7 +7,7 @@ import PublicRecipesList from "./PublicRecipesList";
 
 function BrowseRecipes() {
     return (
-      <div>
+      <div class="view_with_filters">
         <Filters />
         <PublicRecipesList recipes_per_page={6} />
       </div>
