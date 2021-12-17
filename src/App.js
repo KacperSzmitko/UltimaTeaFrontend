@@ -8,6 +8,7 @@ import MakeTea from "./components/MakeTea";
 import EditRecipes from "./components/EditRecipes";
 import BrowseRecipes from "./components/BrowseRecipes";
 import EditContainers from "./components/EditContainers";
+import EditProfile from "./components/EditProfile";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
           <Route path="public_recipes" element={<BrowseRecipes/>}></Route>
           <Route path="edit_containers" element={<EditContainers />}></Route>
           <Route path="machine_status"></Route>
-          <Route path="edit_profile"></Route>
+          <Route path="edit_profile" element={<EditProfile />}></Route>
         </Route>
       </Routes>
     </div>
