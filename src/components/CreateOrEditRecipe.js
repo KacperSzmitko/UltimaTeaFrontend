@@ -2,17 +2,22 @@ import React from "react";
 import { Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  CHANGE_EDIT_TAB_STATUS,
+  CHANGE_CREATE_TAB_STATUS,
+} from "../actions/types";
+import CreateOrEditIcons from "./CreateOrEditIcons";
+import { createRecipe, editRecipe } from "../actions/mainWindowsActions";
 import { useEffect } from "react";
-import { CHANGE_EDIT_TAB_STATUS } from "../actions/types";
 
 function CreateOrEditRecipe() {
   const [recipeName, setRecipeName] = useState(null);
   const [water, setWater] = useState(null);
-  const [tea, setTea] = useState(null);
+  const [tea, setTea] = useState(-1);
   const [teaAmmonut, setTeaAmmonut] = useState(null);
-  const [ing1, setIng1] = useState(null);
+  const [ing1, setIng1] = useState(-1);
   const [ing1Ammonut, seting1Ammonut] = useState(null);
-  const [ing2, setIng2] = useState(null);
+  const [ing2, setIng2] = useState(-1);
   const [ing2Ammonut, seting2Ammonut] = useState(null);
   const [brewingTemp, setBrewingTemp] = useState(null);
   const [brewingTime, setBrewingTime] = useState(null);
@@ -22,21 +27,189 @@ function CreateOrEditRecipe() {
   const teas = useSelector((state) => state.main.teas);
   const editingRecipeId = useSelector((state) => state.main.editing_recipe);
   const recipe = useSelector((state) =>
-    editingRecipeId !== null ? state.main.recipes[editingRecipeId] : null
+    editingRecipeId !== null
+      ? state.main.recipes.filter((recipe) => recipe.id === editingRecipeId)[0]
+      : null
   );
 
+  useEffect(() => {
+    if (editingRecipeId !== null) {
+      setRecipeName(recipe.recipe_name);
+      setWater(recipe.tea_portion);
+      setTea(recipe.tea_type.id);
+      setTeaAmmonut(recipe.tea_herbs_ammount);
+      if (recipe.ingredients.length === 1) {
+        setIng1(recipe.ingredients[0].ingredient.id);
+        seting1Ammonut(recipe.ingredients[0].ammount);
+      } else if (recipe.ingredients.length === 2) {
+        setIng1(recipe.ingredients[0].ingredient.id);
+        seting1Ammonut(recipe.ingredients[0].ammount);
+        setIng2(recipe.ingredients[1].ingredient.id);
+        seting2Ammonut(recipe.ingredients[1].ammount);
+      }
+      setBrewingTemp(recipe.brewing_temperature);
+      setBrewingTime(recipe.brewing_time);
+      setMixingTime(recipe.mixing_time);
+    }
+  }, [editingRecipeId, recipe]);
+
   function onSubmit(e) {
+    // TODO - More validation, test patch, make defautl select as null in form
     e.preventDefault();
-    return 0;
+    const form = e.currentTarget;
+    let data = {};
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    }
+    if (editingRecipeId !== null) {
+      // Edit recipe
+      // Validation
+      let ingredients = [];
+      let method = "patch";
+      if (ing1 !== -1 && ing1Ammonut !== null) {
+
+        if (recipe.ingredients.length >= 1) {
+          ingredients.push({
+            ammount: ing1Ammonut,
+            ingredient_id: ing1,
+            id: recipe.ingredients[0].id,
+          });
+        } else {
+          method = "put";
+          ingredients.push({
+            ammount: ing1Ammonut,
+            ingredient_id: ing1,
+          });
+        }
+      } else if (recipe.ingredients.length >= 1) {
+        method = "put";
+      }
+      if (ing2 !== -1 && ing2Ammonut !== null) {
+        if (recipe.ingredients.length >= 2) {
+          ingredients.push({
+            ammount: ing2Ammonut,
+            ingredient_id: ing2,
+            id: recipe.ingredients[1].id,
+          });
+        } else {
+          method = "put";
+          ingredients.push({
+            ammount: ing2Ammonut,
+            ingredient_id: ing2,
+          });
+        }
+      } else if (recipe.ingredients.length >= 2) {
+        method = "put";
+      }
+      console.log(ingredients);
+      if (recipeName !== null) {
+        if (method === "patch") {
+          if (recipe.recipe_name !== recipeName) data.recipe_name = recipeName;
+        } else {
+          data.recipe_name = recipeName;
+        }
+      }
+
+      if (water !== null) {
+        if (method === "patch") {
+          if (recipe.tea_portion !== water) data.tea_portion = water;
+        } else {
+          data.tea_portion = water;
+        }
+      }
+
+      if (tea !== null) {
+        if (method === "patch") {
+          if (recipe.tea_type.id !== tea) data.tea_type = tea;
+        } else {
+          data.tea_type = tea;
+        }
+      }
+
+      if (teaAmmonut !== null) {
+        if (method === "patch") {
+          if (recipe.tea_herbs_ammount !== teaAmmonut)
+            data.tea_herbs_ammount = teaAmmonut;
+        } else {
+          data.tea_herbs_ammount = teaAmmonut;
+        }
+      }
+
+      if (brewingTemp !== null) {
+        if (method === "patch") {
+          if (recipe.brewing_temperature !== brewingTemp)
+            data.brewing_temperature = brewingTemp;
+        } else {
+          data.brewing_temperature = brewingTemp;
+        }
+      }
+
+      if (brewingTime !== null) {
+        if (method === "patch") {
+          if (recipe.brewing_time !== brewingTime)
+            data.brewing_time = brewingTime;
+        } else {
+          data.brewing_time = brewingTime;
+        }
+      }
+
+      if (mixingTime !== null) {
+        if (method === "patch") {
+          if (recipe.mixing_time !== mixingTime) data.mixing_time = mixingTime;
+        } else {
+          data.mixing_time = mixingTime;
+        }
+      }
+      data.ingredients = ingredients;
+      dispach(editRecipe(data, editingRecipeId, method));
+    } else {
+      // Create reicpe
+      let ingredients = [];
+      if (ing1 !== null && ing1Ammonut !== null) {
+        ingredients.push({
+          ammount: ing1Ammonut,
+          ingredient_id: ing1,
+        });
+      }
+      if (ing2 !== null && ing2Ammonut !== null) {
+        ingredients.push({
+          ammount: ing2Ammonut,
+          ingredient_id: ing2,
+        });
+      }
+      data = {
+        tea_portion: water,
+        tea_herbs_ammount: teaAmmonut,
+        mixing_time: mixingTime,
+        brewing_time: brewingTime,
+        brewing_temperature: brewingTemp,
+        recipe_name: recipeName,
+        tea_type: tea,
+        ingredients: ingredients,
+      };
+      dispach(createRecipe(data));
+    }
   }
 
   function clearForm() {
     return 0;
   }
-  //dispach({ type: CHANGE_EDIT_TAB_STATUS, payload: false });
+
+  function closeEdit(e) {
+    if (e.target.id === "ce_recipe_form_container") {
+      dispach({
+        type: CHANGE_EDIT_TAB_STATUS,
+        payload: { status: false, id: null },
+      });
+      dispach({
+        type: CHANGE_CREATE_TAB_STATUS,
+        payload: { status: false },
+      });
+    }
+  }
 
   return (
-    <div id="ce_recipe_form_container">
+    <div id="ce_recipe_form_container" onClick={(e) => closeEdit(e)}>
       <div id="ce_pos_container">
         <Form
           onSubmit={(e) => onSubmit(e)}
@@ -47,6 +220,7 @@ function CreateOrEditRecipe() {
             <div id="ce_recipe_name_section">
               <div id="ce_name_input">
                 <Form.Control
+                  required
                   type="text"
                   onChange={(e) => setRecipeName(e.target.value)}
                   defaultValue={
@@ -66,8 +240,12 @@ function CreateOrEditRecipe() {
                   <div className="ce_input_value">
                     {" "}
                     <Form.Control
+                      required
                       type="number"
-                      onChange={(e) => setWater(e.target.value)}
+                      onChange={(e) => setWater(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null ? recipe.tea_portion : null
+                      }
                     />
                   </div>
                 </div>
@@ -76,11 +254,13 @@ function CreateOrEditRecipe() {
                   <div className="ce_select ce_input_name">
                     {" "}
                     <Form.Select
-                      onChange={(e) => setTea(e.target.value)}
+                      required
+                      onChange={(e) => setTea(parseInt(e.target.value))}
                       defaultValue={
                         editingRecipeId !== null ? recipe.tea_type.id : null
                       }
                     >
+                      <option value={-1}></option>
                       {teas.map((tea) => (
                         <option value={tea.id} key={tea.id}>
                           {tea.tea_name}
@@ -91,8 +271,14 @@ function CreateOrEditRecipe() {
                   <div className="ce_input_value">
                     {" "}
                     <Form.Control
+                      required
                       type="number"
-                      onChange={(e) => setTea(e.target.value)}
+                      onChange={(e) => setTeaAmmonut(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null
+                          ? recipe.tea_herbs_ammount
+                          : null
+                      }
                     />
                   </div>
                 </div>
@@ -101,7 +287,7 @@ function CreateOrEditRecipe() {
                   <div className="ce_select ce_input_name">
                     {" "}
                     <Form.Select
-                      onChange={(e) => setIng1(e.target.value)}
+                      onChange={(e) => setIng1(parseInt(e.target.value))}
                       defaultValue={
                         editingRecipeId !== null
                           ? recipe.ingredients.length >= 1
@@ -110,6 +296,44 @@ function CreateOrEditRecipe() {
                           : null
                       }
                     >
+                      <option value={-1}></option>
+                      {ingredients.map((ingredient) => (
+                        <option value={ingredient.id} key={ingredient.id}>
+                          {ingredient.ingredient_name}
+                        </option>
+                      ))}
+                    </Form.Select>
+                  </div>
+                  <div className="ce_input_value">
+                    {" "}
+                    <Form.Control
+                      defaultValue={
+                        editingRecipeId !== null
+                          ? recipe.ingredients.length >= 1
+                            ? recipe.ingredients[0].ammount
+                            : null
+                          : null
+                      }
+                      type="number"
+                      onChange={(e) => seting1Ammonut(parseInt(e.target.value))}
+                    />
+                  </div>
+                </div>
+
+                <div className="ce_input_row">
+                  <div className="ce_select ce_input_name">
+                    {" "}
+                    <Form.Select
+                      onChange={(e) => setIng2(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null
+                          ? recipe.ingredients.length >= 2
+                            ? recipe.ingredients[1].ingredient.id
+                            : null
+                          : null
+                      }
+                    >
+                      <option value={-1}></option>
                       {ingredients.map((ingredient) => (
                         <option value={ingredient.id} key={ingredient.id}>
                           {ingredient.ingredient_name}
@@ -121,36 +345,14 @@ function CreateOrEditRecipe() {
                     {" "}
                     <Form.Control
                       type="number"
-                      onChange={(e) => setIng1(e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="ce_input_row">
-                  <div className="ce_select ce_input_name">
-                    {" "}
-                    <Form.Select
-                      onChange={(e) => setIng1(e.target.value)}
+                      onChange={(e) => seting2Ammonut(parseInt(e.target.value))}
                       defaultValue={
                         editingRecipeId !== null
-                          ? recipe.ingredients.length >= 1
-                            ? recipe.ingredients[0].ingredient.id
+                          ? recipe.ingredients.length >= 2
+                            ? recipe.ingredients[1].ammount
                             : null
                           : null
                       }
-                    >
-                      {ingredients.map((ingredient) => (
-                        <option value={ingredient.id} key={ingredient.id}>
-                          {ingredient.ingredient_name}
-                        </option>
-                      ))}
-                    </Form.Select>
-                  </div>
-                  <div className="ce_input_value">
-                    {" "}
-                    <Form.Control
-                      type="number"
-                      onChange={(e) => setTea(e.target.value)}
                     />
                   </div>
                 </div>
@@ -158,44 +360,58 @@ function CreateOrEditRecipe() {
             </div>
 
             <div className="ce_section">
-              <div className="ce_section_title">Temperatury</div>
+              <div className="ce_section_title">Parametry</div>
 
               <div className="ce_section_content">
                 <div className="ce_input_row">
-                  <div className="ce_text_name ce_input_name">Parzenie</div>
-                  <div className="ce_input_value">
-                    {" "}
-                    <Form.Control
-                      type="number"
-                      onChange={(e) => setBrewingTemp(e.target.value)}
-                    />
+                  <div className="ce_text_name ce_input_name">
+                    Temp. parzenia
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="ce_section">
-              <div className="ce_section_title">Czasy</div>
-
-              <div className="ce_section_content">
-                <div className="ce_input_row">
-                  <div className="ce_text_name ce_input_name">Mieszanie</div>
                   <div className="ce_input_value">
                     {" "}
                     <Form.Control
+                      required
                       type="number"
-                      onChange={(e) => setMixingTime(e.target.value)}
+                      onChange={(e) => setBrewingTemp(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null
+                          ? recipe.brewing_temperature
+                          : null
+                      }
                     />
                   </div>
                 </div>
 
                 <div className="ce_input_row">
-                  <div className="ce_text_name ce_input_name">Parzenie</div>
+                  <div className="ce_text_name ce_input_name">
+                    Czas parzenia
+                  </div>
                   <div className="ce_input_value">
                     {" "}
                     <Form.Control
+                      required
                       type="number"
-                      onChange={(e) => setBrewingTime(e.target.value)}
+                      onChange={(e) => setBrewingTime(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null ? recipe.brewing_time : null
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="ce_input_row">
+                  <div className="ce_text_name ce_input_name">
+                    Czas mieszania
+                  </div>
+                  <div className="ce_input_value">
+                    {" "}
+                    <Form.Control
+                      required
+                      type="number"
+                      onChange={(e) => setMixingTime(parseInt(e.target.value))}
+                      defaultValue={
+                        editingRecipeId !== null ? recipe.mixing_time : null
+                      }
                     />
                   </div>
                 </div>
@@ -209,7 +425,7 @@ function CreateOrEditRecipe() {
             </Button>
           </div>
         </Form>
-        <div id="ce_icons"></div>
+        <CreateOrEditIcons />
       </div>
     </div>
   );

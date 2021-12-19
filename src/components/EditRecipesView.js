@@ -1,5 +1,5 @@
 import React from "react";
-import RecipesList from "./RecipesList";
+import EditRecipesList from "./EditRecipesList";
 import Filters from "./Filters";
 import { useSelector } from "react-redux";
 import CreateOrEditRecipe from "./CreateOrEditRecipe";
@@ -18,12 +18,14 @@ function EditRecipes() {
     "view_with_filters"
   );
   return (
-    <div style={{marginLeft:"15px", position:"relative"}}>
+    <div style={{ position: "relative", width: "100%" }}>
       <div className={viewClasses}>
         <Filters />
-        <RecipesList recipes_per_page={6} first_blank={true} edit={true} />
+        <EditRecipesList recipes_per_page={6} first_blank={true} edit={true} />
       </div>
-        {createRecipeTabActive || editRecipeTabActive ? <CreateOrEditRecipe />: null}
+      {createRecipeTabActive || editRecipeTabActive ? (
+        <CreateOrEditRecipe />
+      ) : null}
     </div>
   );
 }

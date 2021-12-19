@@ -18,6 +18,7 @@ function Filters({ customSubmit }) {
   const [brewingTimeUp, setbrewingTimeUp] = useState(-1);
   const [mixingTimeDown, setmixingTimeDown] = useState(-1);
   const [mixingTimeUp, setmixingTimeUp] = useState(-1);
+  const [minScore, setMinScore] = useState(-1);
   const ingredients = useSelector((state) => state.main.ingredients);
   const teas = useSelector((state) => state.main.teas);
   const dispach = useDispatch();

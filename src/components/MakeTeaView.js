@@ -1,5 +1,5 @@
 import React from "react";
-import OwnRecipesList from "./OwnRecipesList";
+import OwnRecipesList from "./MakeTeaRecipeList";
 import { Button } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { makeTea } from "../actions/mainWindowsActions";

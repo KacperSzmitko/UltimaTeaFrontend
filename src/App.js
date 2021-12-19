@@ -4,11 +4,11 @@ import ResetPasswordForm from "./components/ResetPasswordForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Routes, Route, Link } from "react-router-dom";
 import MainAppStatic from "./components/MainAppStatic";
-import MakeTea from "./components/MakeTea";
-import EditRecipes from "./components/EditRecipes";
-import BrowseRecipes from "./components/BrowseRecipes";
-import EditContainers from "./components/EditContainers";
-import EditProfile from "./components/EditProfile";
+import MakeTea from "./components/MakeTeaView";
+import EditRecipes from "./components/EditRecipesView";
+import BrowseRecipes from "./components/BrowseRecipesView";
+import EditContainers from "./components/EditContainersView";
+import EditProfile from "./components/EditProfileView";
 
 function App() {
   return (

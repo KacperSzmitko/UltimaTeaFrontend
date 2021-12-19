@@ -4,10 +4,26 @@ import { useDispatch } from "react-redux";
 import { editSelectedRecipe } from "../actions/mainWindowsActions";
 import { useEffect } from "react";
 import EditIconSet from "./EditIconSet";
+import BrowseRecipesIconSet from "./BrowseRecipesIconSet";
 
 var classNames = require("classnames");
-
-function Recipe({ id, recipe, index, first_blank = false, edit = false, icon_set=0 }) {
+/**
+ *
+ * @param {*} first_blank To determine which recipe is mid one specify if there is first blank on list or not
+ * @param {*} id Id of recipe
+ * @param {*} index Index of recipe, to specify mid recipe 
+ * @param {*} recipe Single recipe to represent by component
+ * @param {*} edit MakeTeaView - false, Edit/BrowseView - true 
+ * @param {*} icon_set 0 - EditIconSet 1 - BrowseIconSet 
+ */
+function Recipe({
+  id,
+  recipe,
+  index,
+  first_blank = false,
+  edit = false,
+  icon_set = 0,
+}) {
   const selectedRecipe = useSelector((state) => state.main.selected_recipe);
   const dispach = useDispatch();
 
@@ -50,7 +66,7 @@ function Recipe({ id, recipe, index, first_blank = false, edit = false, icon_set
     <div className={recipeContainerClasses}>
       <div
         id={"recipe_" + id}
-        onClick={() => selectRecipe(id)}
+        onClick={() => (edit ? null : selectRecipe(id))}
         className={recipeClasses}
       >
         <div className={titleWithLineClasses}>
@@ -123,11 +139,11 @@ function Recipe({ id, recipe, index, first_blank = false, edit = false, icon_set
           </div>
         </div>
       </div>
-      {edit && icon_set===1 ? (
+      {edit && icon_set === 1 ? (
         <EditIconSet favourite={recipe.is_favourite} recipeId={id} />
       ) : null}
-      {edit && icon_set===2 ? (
-        <EditIconSet favourite={recipe.is_favourite} recipeId={id} />
+      {edit && icon_set === 2 ? (
+        <BrowseRecipesIconSet recipeId={id} />
       ) : null}
     </div>
   );

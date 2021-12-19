@@ -59,10 +59,27 @@ const initialState = {
 
 const reducer = function (state = initialState, action) {
   switch (action.type) {
+    case CREATE_RECIPE:
+      return { ...state, recipes: [...state.recipes, action.payload] };
+    case EDIT_RECIPE:
+      return {
+        ...state,
+        recipes: state.recipes.map((recipe) =>
+          recipe.id === action.payload.id ? action.payload.data : recipe
+        ),
+      };
     case CHANGE_EDIT_TAB_STATUS:
-      return { ...state, edit_tab_active: action.payload.status, editing_recipe: action.payload.id };
+      return {
+        ...state,
+        edit_tab_active: action.payload.status,
+        editing_recipe: action.payload.id,
+      };
     case CHANGE_CREATE_TAB_STATUS:
-      return { ...state, create_tab_active: action.payload };
+      return {
+        ...state,
+        create_tab_active: action.payload.status,
+        editing_recipe: null,
+      };
     case UPDATE_CONTAINERS:
       return {
         ...state,

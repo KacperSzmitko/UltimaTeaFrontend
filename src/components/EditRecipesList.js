@@ -5,12 +5,15 @@ import { useState } from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { editSelectedRecipe } from "../actions/mainWindowsActions";
-import { applyFilters } from "./OwnRecipesList";
+import { applyFilters } from "./MakeTeaRecipeList";
 import addRecipeImg from "../static/add_recipe.png";
 import EditIconSet from "./EditIconSet";
+import {
+  CHANGE_CREATE_TAB_STATUS
+} from "../actions/types";
 var classNames = require("classnames");
 
-function RecipesList({ recipes_per_page, first_blank = true, edit = false }) {
+function EditRecipesList({ recipes_per_page, first_blank = true, edit = false }) {
   const [currentPage, setCurrentPage] = useState(0);
   const filters = useSelector((state) => state.main.own_recipes_filters);
   const recipes = useSelector(
@@ -40,7 +43,10 @@ function RecipesList({ recipes_per_page, first_blank = true, edit = false }) {
   }
 
   function createRecipe() {
-    return 0;
+    dispach({
+      type: CHANGE_CREATE_TAB_STATUS,
+      payload: { status: true },
+    });
   }
 
   const arrowClasses = classNames("edit_arrow_conatiner");
@@ -105,4 +111,4 @@ function RecipesList({ recipes_per_page, first_blank = true, edit = false }) {
   );
 }
 
-export default RecipesList;
+export default EditRecipesList;

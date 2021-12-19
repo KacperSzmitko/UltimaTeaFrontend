@@ -17,6 +17,9 @@ import {
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
+/**
+ * Get actual containers statused from server, and update redux state
+ */
 const updateContainers = () => async (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   let water_container = await axios
@@ -64,6 +67,9 @@ const updateContainers = () => async (dispach, getState) => {
     });
 };
 
+/**
+ * Get all user recipes and store them in state
+ */
 const getUserRecipes = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -80,6 +86,9 @@ const getUserRecipes = () => (dispach, getState) => {
     });
 };
 
+/**
+ * Get list of all avaliable ingredients, and store them in redux state
+ */
 const getIngredients = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -96,6 +105,9 @@ const getIngredients = () => (dispach, getState) => {
     });
 };
 
+/**
+ * Get list of all avaliable teas, and store them in redux state
+ */
 const getTeas = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -111,40 +123,57 @@ const getTeas = () => (dispach, getState) => {
       console.log(e.response.data);
     });
 };
-
+/**
+ *
+ * @param {*} data Current full state of filters
+ */
 const updateFilters = (data) => (dispach) => {
   dispach({ type: UPDATE_FILTERS, payload: data });
 };
 
-const getPublicRecipes =
-  (filters, url, recipes_per_page) => (dispach, getState) => {
-    let config = createConfig(getState().auth.token);
-    let response = "";
-    let params = {};
-    for (const [filterName, filterValue] of Object.entries(filters)) {
-      if ((filterValue !== -1) & (filterValue !== ""))
-        params[filterName] = filterValue;
-    }
-    params.size = recipes_per_page;
-    config.params = params;
-    if (url !== "") {
-      response = axios
-        .get(url, config)
-        .then((response) => response.data)
-        .catch((e) => []);
-    } else {
-      response = axios
-        .get("/public_recipes/", config)
-        .then((response) => response.data)
-        .catch((e) => []);
-    }
-    return response;
-  };
+/**
+ * Fetch recipes. Also filters from redux state are applied
+ * @param {*} url If you want to fetch for example next recipes from link pass it here, otherwise pass ""
+ * @param {*} recipes_per_page Number of recipes to fetch
+ * @returns
+ */
+const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
+  const filters = getState().main.own_recipes_filters;
+  let config = createConfig(getState().auth.token);
+  let response = "";
+  let params = {};
+  // Create dict of params to construct url with filters
+  for (const [filterName, filterValue] of Object.entries(filters)) {
+    if (filterValue !== -1 && filterValue !== "")
+      params[filterName] = filterValue;
+  }
+  // Specify how many recipes should be fetched
+  params.size = recipes_per_page;
+  config.params = params;
+  if (url !== "") {
+    response = axios
+      .get(url, config)
+      .then((response) => response.data)
+      .catch((e) => []);
+  } else {
+    response = axios
+      .get("/public_recipes/", config)
+      .then((response) => response.data)
+      .catch((e) => []);
+  }
+  return response;
+};
 
+/**
+ * Modify tea or ingredient in container
+ * @param {[{}]} tea_containers List of tea containers to modify. Single elemtnt is {id: data}
+ * @param {[{}]} ing_containers List of ingredients containers to modify. Single elemtnt is {id: data}
+ */
 const changeContainers =
   (tea_containers, ing_containers) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
     let requests = [];
+    // Update all tea containers
     for (const tea_container of tea_containers) {
       requests.push(
         axios
@@ -169,6 +198,7 @@ const changeContainers =
       );
     }
 
+    // Update all ingredients containers
     for (const ing_container of ing_containers) {
       requests.push(
         axios
@@ -195,6 +225,10 @@ const changeContainers =
     axios.all(requests);
   };
 
+/**
+ *
+ * @param {*} recipe_id Id of recipe that user want to make
+ */
 const makeTea = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -203,10 +237,20 @@ const makeTea = (recipe_id) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+/**
+ * Edit currently selected recipe to given one
+ * @param {*} recipe_id Id of recipe that should be selected
+ */
 const editSelectedRecipe = (recipe_id) => (dispach) => {
   dispach({ type: EDIT_SELECTED_RECIPE, payload: recipe_id });
 };
 
+/**
+ * Change is_favourite filed of recipe
+ * @param {int} recipe_id Id of recipe do edit
+ * @param {boolean} is_favourite New status
+ * @returns
+ */
 const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
   // Change given recipe is_favourite status to given one
   let config = createConfig(getState().auth.token);
@@ -225,11 +269,71 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+/**
+ * Delete own recipe
+ * @param {*} recipe_id
+ * @returns
+ */
 const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .delete(`/recipes/${recipe_id}`, config)
     .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
+    .catch((e) => console.log(e.response.data));
+};
+
+function formatResponse(data, getState){
+return {
+        ...data,
+        ingredients: data.ingredients.map((ing) => ({
+          ammount: ing.ammount,
+          id: ing.id,
+          ingredient: getState().main.ingredients.find(
+            (ingredient) => ingredient.id === ing.ingredient_id
+          ),
+        })),
+        tea_type: getState().main.teas.find(
+          (tea) => tea.id === data.tea_type
+        ),
+      }
+}
+
+const createRecipe = (data) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .post("/recipes/", data, config)
+    .then((r) => {
+      dispach({
+        type: CREATE_RECIPE,
+        payload: formatResponse(r.data, getState),
+      });
+    })
+    .catch((e) => console.log(e.response.data));
+};
+
+/**
+ * 
+ * @param {*} data 
+ * @param {*} recipe_id 
+ * @param {*} patch PUT or PATCH
+ * @returns 
+ */
+const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  console.log(data);
+  console.log(method);
+  axios({
+    method: method,
+    url: `/recipes/${recipe_id}/`,
+    data: data,
+    headers: config.headers,
+  })
+    .then((r) => {
+      dispach({
+        type: EDIT_RECIPE,
+        payload: { id: recipe_id, data: formatResponse(r.data, getState) },
+      });
+    })
     .catch((e) => console.log(e.response.data));
 };
 
@@ -245,4 +349,6 @@ export {
   editSelectedRecipe,
   favouritesEdit,
   deleteOwnRecipe,
+  createRecipe,
+  editRecipe,
 };

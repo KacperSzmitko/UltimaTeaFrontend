@@ -8,20 +8,25 @@ import { IconContext } from "react-icons";
 
 var classNames = require("classnames");
 
-function PublicRecipesList({ recipes_per_page }) {
+/**
+ * 
+ * @param {int} recipes_per_page Definie how many recipes should be listed on single page
+ */
+function BrowseRecipesList({ recipes_per_page }) {
   const [currentPage, setCurrentPage] = useState(0);
   const filters = useSelector((state) => state.main.own_recipes_filters);
+  // List of current recipes
   let [recipes, setRecipes] = useState([]);
+  // Pointer to next recipes, setted after each fetch
   const [next, setNext] = useState("");
+  // Pointer to previous recipes setted  after each fetch
   const [prev, setPrev] = useState(null);
   const dispach = useDispatch();
 
   useEffect(() => {
     async function getRecipes() {
       // Fetch first page
-      let recipes = await dispach(
-        getPublicRecipes(filters, "", recipes_per_page)
-      );
+      let recipes = await dispach(getPublicRecipes("", recipes_per_page));
       setNext(recipes.next);
       setPrev(recipes.previous);
       setRecipes(recipes.results);
@@ -31,9 +36,7 @@ function PublicRecipesList({ recipes_per_page }) {
 
   async function nextRecipes() {
     if (next !== null) {
-      recipes = await dispach(
-        getPublicRecipes(filters, next, recipes_per_page)
-      );
+      recipes = await dispach(getPublicRecipes(next, recipes_per_page));
       setNext(recipes.next);
       setPrev(recipes.previous);
       setRecipes(recipes.results);
@@ -43,9 +46,7 @@ function PublicRecipesList({ recipes_per_page }) {
 
   async function prevRecipes() {
     if (prev !== null) {
-      recipes = await dispach(
-        getPublicRecipes(filters, prev, recipes_per_page)
-      );
+      recipes = await dispach(getPublicRecipes(prev, recipes_per_page));
       setNext(recipes.next);
       setPrev(recipes.previous);
       setRecipes(recipes.results);
@@ -73,7 +74,14 @@ function PublicRecipesList({ recipes_per_page }) {
       </div>
       <div id="recipes" className={recipesClasses}>
         {recipes.map((recipe, index) => (
-          <Recipe id={recipe.id} key={recipe.id} recipe={recipe} index={index} edit={true} />
+          <Recipe
+            id={recipe.id}
+            key={recipe.id}
+            recipe={recipe}
+            index={index}
+            edit={true}
+            icon_set={2}
+          />
         ))}
       </div>
       <div id="right_arrow" className={arrowClasses}>
@@ -91,4 +99,4 @@ function PublicRecipesList({ recipes_per_page }) {
   );
 }
 
-export default PublicRecipesList;
+export default BrowseRecipesList;
