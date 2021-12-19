@@ -10,6 +10,10 @@ import {
   EXPIRED_TOKEN,
   MAKE_TEA,
   EDIT_SELECTED_RECIPE,
+  FAVOURITES_EDIT,
+  DELETE_RECIPE,
+  CREATE_RECIPE,
+  EDIT_RECIPE,
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
@@ -140,49 +144,53 @@ const getPublicRecipes =
 const changeContainers =
   (tea_containers, ing_containers) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
-    let requests = []
+    let requests = [];
     for (const tea_container of tea_containers) {
-      requests.push(axios
-        .put(
-          `/machine/containers/tea/${tea_container.id}/`,
-          { id: tea_container.tea },
-          config
-        )
-        .then((r) =>
-          dispach({
-            type: UPDATE_TEA_CONTAINERS,
-            payload: { id: tea_container.id, tea: r.data },
+      requests.push(
+        axios
+          .put(
+            `/machine/containers/tea/${tea_container.id}/`,
+            { id: tea_container.tea },
+            config
+          )
+          .then((r) =>
+            dispach({
+              type: UPDATE_TEA_CONTAINERS,
+              payload: { id: tea_container.id, tea: r.data },
+            })
+          )
+          .catch((e) => {
+            if (e.response.status === 401 && !getState().auth.tokenExpired) {
+              dispach({ type: EXPIRED_TOKEN });
+              dispach(refresh_token({ refresh: getState().auth.refresh }));
+            }
+            console.log(e.response.data);
           })
-        )
-        .catch((e) => {
-          if (e.response.status === 401 && !getState().auth.tokenExpired) {
-            dispach({ type: EXPIRED_TOKEN });
-            dispach(refresh_token({ refresh: getState().auth.refresh }));
-          }
-          console.log(e.response.data);
-        }))
+      );
     }
 
     for (const ing_container of ing_containers) {
-      requests.push(axios
-        .put(
-          `/machine/containers/ingredient/${ing_container.id}/`,
-          { id: ing_container.ing },
-          config
-        )
-        .then((r) =>
-          dispach({
-            type: UPDATE_ING_CONTAINERS,
-            payload: { id: ing_container.id, ing: r.data },
+      requests.push(
+        axios
+          .put(
+            `/machine/containers/ingredient/${ing_container.id}/`,
+            { id: ing_container.ing },
+            config
+          )
+          .then((r) =>
+            dispach({
+              type: UPDATE_ING_CONTAINERS,
+              payload: { id: ing_container.id, ing: r.data },
+            })
+          )
+          .catch((e) => {
+            if (e.response.status === 401 && !getState().auth.tokenExpired) {
+              dispach({ type: EXPIRED_TOKEN });
+              dispach(refresh_token({ refresh: getState().auth.refresh }));
+            }
+            console.log(e.response.data);
           })
-        )
-        .catch((e) => {
-          if (e.response.status === 401 && !getState().auth.tokenExpired) {
-            dispach({ type: EXPIRED_TOKEN });
-            dispach(refresh_token({ refresh: getState().auth.refresh }));
-          }
-          console.log(e.response.data);
-        }))
+      );
     }
     axios.all(requests);
   };
@@ -199,6 +207,32 @@ const editSelectedRecipe = (recipe_id) => (dispach) => {
   dispach({ type: EDIT_SELECTED_RECIPE, payload: recipe_id });
 };
 
+const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
+  // Change given recipe is_favourite status to given one
+  let config = createConfig(getState().auth.token);
+  axios
+    .put(
+      `/favourites_edit/${recipe_id}/`,
+      { is_favourite: is_favourite },
+      config
+    )
+    .then((r) =>
+      dispach({
+        type: FAVOURITES_EDIT,
+        payload: { is_favourite: r.data.is_favourite, id: recipe_id },
+      })
+    )
+    .catch((e) => console.log(e.response.data));
+};
+
+const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .delete(`/recipes/${recipe_id}`, config)
+    .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
+    .catch((e) => console.log(e.response.data));
+};
+
 export {
   updateContainers,
   getUserRecipes,
@@ -209,4 +243,6 @@ export {
   changeContainers,
   makeTea,
   editSelectedRecipe,
+  favouritesEdit,
+  deleteOwnRecipe,
 };

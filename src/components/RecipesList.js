@@ -5,23 +5,23 @@ import { useState } from "react";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import { IconContext } from "react-icons";
 import { editSelectedRecipe } from "../actions/mainWindowsActions";
-import {applyFilters } from "./OwnRecipesList";
+import { applyFilters } from "./OwnRecipesList";
 import addRecipeImg from "../static/add_recipe.png";
+import EditIconSet from "./EditIconSet";
 var classNames = require("classnames");
 
-
-function RecipesList({
-  recipes_per_page,
-  first_blank = true,
-  edit = false,
-}) {
+function RecipesList({ recipes_per_page, first_blank = true, edit = false }) {
   const [currentPage, setCurrentPage] = useState(0);
   const filters = useSelector((state) => state.main.own_recipes_filters);
   const recipes = useSelector(
-    (state) => applyFilters(state.main.recipes, filters).slice(
-            currentPage === 0 ? 0 : currentPage * recipes_per_page,
-            currentPage === 0 ? 5 : (currentPage + 1) * recipes_per_page
-          ),
+    (state) =>
+      applyFilters(state.main.recipes, filters)
+        .sort((a, b) => a.id - b.id)
+        .sort((a, b) => (a.is_favourite ? -1 : b.is_favourite ? 1 : 0))
+        .slice(
+          currentPage === 0 ? 0 : currentPage * recipes_per_page,
+          currentPage === 0 ? 5 : (currentPage + 1) * recipes_per_page
+        ),
     shallowEqual
   );
 
@@ -39,20 +39,14 @@ function RecipesList({
     if (currentPage - 1 >= 0) setCurrentPage(currentPage - 1);
   }
 
-  function createRecipe(){
+  function createRecipe() {
     return 0;
   }
 
   const arrowClasses = classNames("edit_arrow_conatiner");
   const recipesClasses = classNames("edit_recipes_list");
-  const leftBtnClasses = classNames(
-    "edit_left_arrow_btn",
-    "edit_arrow"
-  );
-  const rightBtnClasses = classNames(
-    "edit_right_arrow_btn",
-    "edit_arrow"
-  );
+  const leftBtnClasses = classNames("edit_left_arrow_btn", "edit_arrow");
+  const rightBtnClasses = classNames("edit_right_arrow_btn", "edit_arrow");
 
   return (
     <div className="recipes_list_container">
@@ -69,12 +63,19 @@ function RecipesList({
       </div>
       <div id="recipes" className={recipesClasses}>
         {currentPage === 0 && first_blank ? (
-          <div
-            id="blank_recipe"
-            className="edit_recipe"
-            onClick={() => createRecipe()}
-          >
-            <img src={addRecipeImg} alt="Add recipe" id="create_recipe_img"></img>
+          <div className="recipe_container">
+            <div
+              id="blank_recipe"
+              className="edit_recipe"
+              onClick={() => createRecipe()}
+            >
+              <img
+                src={addRecipeImg}
+                alt="Add recipe"
+                id="create_recipe_img"
+              ></img>
+            </div>
+            <EditIconSet hidden={true} />
           </div>
         ) : null}
         {recipes.map((recipe, index) => (
@@ -85,6 +86,7 @@ function RecipesList({
             index={index}
             first_blank={true}
             edit={edit}
+            icon_set={1}
           />
         ))}
       </div>

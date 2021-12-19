@@ -8,6 +8,12 @@ import {
   UPDATE_ING_CONTAINERS,
   MAKE_TEA,
   EDIT_SELECTED_RECIPE,
+  FAVOURITES_EDIT,
+  DELETE_RECIPE,
+  CREATE_RECIPE,
+  EDIT_RECIPE,
+  CHANGE_EDIT_TAB_STATUS,
+  CHANGE_CREATE_TAB_STATUS,
 } from "../actions/types";
 
 const initialState = {
@@ -46,10 +52,17 @@ const initialState = {
   teas: [],
   tea_making_status: 0,
   selected_recipe: null,
+  create_tab_active: false,
+  edit_tab_active: false,
+  editing_recipe: null,
 };
 
 const reducer = function (state = initialState, action) {
   switch (action.type) {
+    case CHANGE_EDIT_TAB_STATUS:
+      return { ...state, edit_tab_active: action.payload.status, editing_recipe: action.payload.id };
+    case CHANGE_CREATE_TAB_STATUS:
+      return { ...state, create_tab_active: action.payload };
     case UPDATE_CONTAINERS:
       return {
         ...state,
@@ -68,15 +81,15 @@ const reducer = function (state = initialState, action) {
     case FETCH_INGREDIENTS:
       return {
         ...state,
-        fetched_recipes : true,
-        ingredients: action.payload
-      }
+        fetched_recipes: true,
+        ingredients: action.payload,
+      };
     case FETCH_TEAS:
       return {
         ...state,
-        fetched_teas : true,
-        teas: action.payload
-      }
+        fetched_teas: true,
+        teas: action.payload,
+      };
     case UPDATE_FILTERS:
       return {
         ...state,
@@ -113,12 +126,26 @@ const reducer = function (state = initialState, action) {
     case MAKE_TEA:
       return {
         ...state,
-        tea_making_status: 1
+        tea_making_status: 1,
       };
     case EDIT_SELECTED_RECIPE:
       return {
         ...state,
         selected_recipe: action.payload,
+      };
+    case FAVOURITES_EDIT:
+      return {
+        ...state,
+        recipes: state.recipes.map((recipe) =>
+          recipe.id === action.payload.id
+            ? { ...recipe, is_favourite: action.payload.is_favourite }
+            : recipe
+        ),
+      };
+    case DELETE_RECIPE:
+      return {
+        ...state,
+        recipes: state.recipes.filter((recipe) => recipe.id !== action.payload),
       };
     default:
       return state;
