@@ -54,7 +54,6 @@ function CreateOrEditRecipe() {
   }, [editingRecipeId, recipe]);
 
   function onSubmit(e) {
-    // TODO - More validation, test patch, make defautl select as null in form
     e.preventDefault();
     const form = e.currentTarget;
     let data = {};
@@ -62,12 +61,23 @@ function CreateOrEditRecipe() {
       e.stopPropagation();
     }
     if (editingRecipeId !== null) {
-      // Edit recipe
-      // Validation
       let ingredients = [];
       let method = "patch";
-      if (ing1 !== -1 && ing1Ammonut !== null) {
+      if (
+        (ing1 !== -1 && ing1Ammonut === null) ||
+        (ing1 === null && ing1Ammonut !== -1)
+      ) {
+        // Raise error only one specified
+      }
+      if (
+        (ing2 !== -1 && ing2Ammonut === null) ||
+        (ing2 === null && ing2Ammonut !== -1)
+      ) {
+        // Raise error only one specified
+      }
 
+      
+      if (ing1 !== -1 && ing1Ammonut !== null) {
         if (recipe.ingredients.length >= 1) {
           ingredients.push({
             ammount: ing1Ammonut,
