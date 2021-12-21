@@ -47,6 +47,9 @@ export function applyFilters(recipes, filters) {
       } else if (filterName === "mixing_time_up") {
         const value = parseInt(filterValue);
         recipes = recipes.filter((recipe) => recipe.mixing_time <= value);
+      }else if (filterName === "min_score"){
+        const value = parseInt(filterValue);
+        recipes = recipes.filter((recipe) => recipe.score >= value);
       }
     }
   }

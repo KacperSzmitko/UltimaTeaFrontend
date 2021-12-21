@@ -90,7 +90,7 @@ function EditRecipesList({ recipes_per_page, first_blank = true, edit = false })
             key={recipe.id}
             recipe={recipe}
             index={index}
-            first_blank={true}
+            first_blank={currentPage === 0 ? true: false}
             edit={edit}
             icon_set={1}
           />

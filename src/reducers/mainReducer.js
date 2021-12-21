@@ -14,6 +14,9 @@ import {
   EDIT_RECIPE,
   CHANGE_EDIT_TAB_STATUS,
   CHANGE_CREATE_TAB_STATUS,
+  CHANGE_PUBLIC_STATUS,
+  FETCH_PUBLIC_RECIPES,
+  EDIT_RECIPE_SCORE,
 } from "../actions/types";
 
 const initialState = {
@@ -47,7 +50,6 @@ const initialState = {
   fetched_ingredients: false,
   recipes: [],
   own_recipes_filters: {},
-  public_recipes_filters: {},
   ingredients: [],
   teas: [],
   tea_making_status: 0,
@@ -55,10 +57,38 @@ const initialState = {
   create_tab_active: false,
   edit_tab_active: false,
   editing_recipe: null,
+  fetched_recipe_page: {
+    results: [],
+    next: null,
+    previous: null,
+  },
 };
 
 const reducer = function (state = initialState, action) {
   switch (action.type) {
+    case EDIT_RECIPE_SCORE:
+      return {
+        ...state,
+        fetched_recipe_page: {
+          ...state.fetched_recipe_page,
+          results: state.fetched_recipe_page.results.map((recipe) =>
+            recipe.id === action.payload.id
+              ? { ...recipe, score: action.payload.score, voted: true }
+              : recipe
+          ),
+        },
+      };
+    case FETCH_PUBLIC_RECIPES:
+      return { ...state, fetched_recipe_page: action.payload };
+    case CHANGE_PUBLIC_STATUS:
+      return {
+        ...state,
+        recipes: state.recipes.map((recipe) =>
+          recipe.id === action.payload.id
+            ? { ...recipe, is_public: action.payload.is_public }
+            : recipe
+        ),
+      };
     case CREATE_RECIPE:
       return { ...state, recipes: [...state.recipes, action.payload] };
     case EDIT_RECIPE:
@@ -108,6 +138,7 @@ const reducer = function (state = initialState, action) {
         teas: action.payload,
       };
     case UPDATE_FILTERS:
+      console.log(action.payload);
       return {
         ...state,
         own_recipes_filters: action.payload,

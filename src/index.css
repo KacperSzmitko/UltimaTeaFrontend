@@ -29,7 +29,7 @@ html {
   height: 91%;
   background-color: rgb(241, 241, 241);
   max-width: 1500px;
-  max-height: 900px;
+  max-height: 1000px;
 }
 
 .line {
@@ -37,7 +37,7 @@ html {
   height: 1px;
   bottom: 0;
   border-bottom: 1px solid black;
-  margin-bottom: 6%;
+  margin-bottom: 4%;
 }
 
 .selected_recipe {
@@ -57,7 +57,7 @@ html {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  padding-top: 6%;
+  padding-top: 4%;
 }
 
 .h4 {
@@ -163,10 +163,12 @@ html {
 
 .recipe_main_section {
   padding: 0 5% 0;
+  height: 70%;
 }
 
 .recipe_section {
-  margin-bottom: 15%;
+  margin-bottom: 10%;
+  height: calc(100% / 3);
 }
 
 .recipe_column {
@@ -458,8 +460,10 @@ html {
 }
 
 #ce_form {
-  background-color: white;
-  border: 1px black solid;
+  border: 2px solid;
+  border-image: linear-gradient(45deg, turquoise, rgb(140, 207, 40)) 1;
+  background-image: linear-gradient(rgb(217, 236, 225), white);
+  border-radius: 2%;
   display: flex;
   height: 100%;
   width: 90%;
@@ -553,4 +557,80 @@ html {
 
 #ce_icon_set {
   display: flex;
+}
+
+.score {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 25% 0;
+  margin-top: auto;
+  padding-bottom: 7%;
+}
+
+.hide {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15%;
+}
+
+.show {
+  transition: max-height 0.55s ease-in;
+  visibility: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15%;
+  cursor: pointer;
+  height: auto;
+  overflow: hidden;
+  max-height: 300px;
+}
+
+.edit_icon_set_container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 4%;
+}
+
+.browse_icon_container {
+  height: auto;
+}
+
+.margin {
+  margin-top: 100%;
+}
+
+.no_margin {
+  margin: 0;
+}
+
+.global_recipe {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, turquoise, rgb(140, 207, 40)) 1;
+  background-image: linear-gradient(rgb(217, 236, 225), white);
+  border-radius: 2%;
+  display: flex;
+  flex-direction: column;
+}
+
+.icon_container {
+  outline: 2px solid rgb(145, 20, 40);
+}
+
+.ing_section {
+  height: 35%;
+}
+
+.temp_section {
+  height: 25%;
+}
+
+.time_section {
+  height: 35%;
 }

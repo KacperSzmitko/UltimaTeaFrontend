@@ -15,10 +15,11 @@ function EditRecipes() {
 
   const viewClasses = classNames(
     { blured: createRecipeTabActive || editRecipeTabActive },
+    "no_margin",
     "view_with_filters"
   );
   return (
-    <div style={{ position: "relative", width: "100%" }}>
+    <div style={{ position: "relative", width: "100%", marginLeft: "15px" }}>
       <div className={viewClasses}>
         <Filters />
         <EditRecipesList recipes_per_page={6} first_blank={true} edit={true} />

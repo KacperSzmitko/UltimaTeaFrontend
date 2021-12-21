@@ -5,26 +5,35 @@ import { editSelectedRecipe } from "../actions/mainWindowsActions";
 import { useEffect } from "react";
 import EditIconSet from "./EditIconSet";
 import BrowseRecipesIconSet from "./BrowseRecipesIconSet";
+import { IconContext } from "react-icons";
+import { ImStarEmpty, ImStarHalf, ImStarFull } from "react-icons/im";
 
 var classNames = require("classnames");
 /**
  *
  * @param {*} first_blank To determine which recipe is mid one specify if there is first blank on list or not
  * @param {*} id Id of recipe
- * @param {*} index Index of recipe, to specify mid recipe 
+ * @param {*} index Index of recipe, to specify mid recipe
  * @param {*} recipe Single recipe to represent by component
- * @param {*} edit MakeTeaView - false, Edit/BrowseView - true 
- * @param {*} icon_set 0 - EditIconSet 1 - BrowseIconSet 
+ * @param {*} edit MakeTeaView - false, Edit/BrowseView - true
+ * @param {*} icon_set 0 - EditIconSet 1 - BrowseIconSet
  */
 function Recipe({
   id,
-  recipe,
   index,
   first_blank = false,
   edit = false,
   icon_set = 0,
+  browse = false,
 }) {
   const selectedRecipe = useSelector((state) => state.main.selected_recipe);
+  const recipe = useSelector((state) =>
+    browse
+      ? state.main.fetched_recipe_page.results.find(
+          (recipe) => recipe.id === id
+        )
+      : state.main.recipes.find((recipe) => recipe.id === id)
+  );
   const dispach = useDispatch();
 
   useEffect(() => {
@@ -44,10 +53,9 @@ function Recipe({
   const titleClasses = classNames("h4");
   const sectionTitleClasses = classNames("h5");
   const sectionItemsClasses = classNames("h6");
-  const sectionClasses = classNames("recipe_section");
   const titleWithLineClasses = classNames("title_container");
   const recipeMainSectionClasses = classNames("recipe_main_section");
-  const recipeClasses = classNames({
+  const recipeClasses = classNames("global_recipe",{
     edit_recipe: edit,
     selected_recipe: selectedRecipe === id,
     recipe: !edit,
@@ -75,7 +83,7 @@ function Recipe({
         </div>
 
         <div className={recipeMainSectionClasses}>
-          <div className={sectionClasses}>
+          <div className="ing_section recipe_section">
             <div className={sectionTitleClasses}>Składniki</div>
 
             <div className={sectionItemsClasses}>
@@ -107,7 +115,7 @@ function Recipe({
             </div>
           </div>
 
-          <div className={sectionClasses}>
+          <div className="temp_section recipe_section">
             <div className={sectionTitleClasses}>Temperatury</div>
             <div className={sectionItemsClasses}>
               <div className="recipes_names recipe_column">Parzenie</div>
@@ -120,7 +128,7 @@ function Recipe({
             </div>
           </div>
 
-          <div className={sectionClasses}>
+          <div className="time_section recipe_section">
             <div className={sectionTitleClasses}>Czasy</div>
             <div className={sectionItemsClasses}>
               <div className="recipes_names recipe_column">
@@ -138,13 +146,37 @@ function Recipe({
             </div>
           </div>
         </div>
+
+        <div className="score">
+          <IconContext.Provider
+            value={{
+              className: "icon",
+              size: 25,
+              color: "gold",
+            }}
+          >
+            {[1, 2, 3, 4, 5].map((e) =>
+              recipe.score < e ? (
+                recipe.score < e - 0.5 ? (
+                  <ImStarEmpty key={e} />
+                ) : (
+                  <ImStarHalf key={e} />
+                )
+              ) : (
+                <ImStarFull key={e} />
+              )
+            )}
+          </IconContext.Provider>
+        </div>
       </div>
       {edit && icon_set === 1 ? (
-        <EditIconSet favourite={recipe.is_favourite} recipeId={id} />
+        <EditIconSet
+          favourite={recipe.is_favourite}
+          recipeId={id}
+          is_public={recipe.is_public}
+        />
       ) : null}
-      {edit && icon_set === 2 ? (
-        <BrowseRecipesIconSet recipeId={id} />
-      ) : null}
+      {edit && icon_set === 2 ? <BrowseRecipesIconSet recipe={recipe} /> : null}
     </div>
   );
 }

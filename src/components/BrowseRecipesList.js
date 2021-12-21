@@ -14,42 +14,28 @@ var classNames = require("classnames");
  */
 function BrowseRecipesList({ recipes_per_page }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const filters = useSelector((state) => state.main.own_recipes_filters);
   // List of current recipes
-  let [recipes, setRecipes] = useState([]);
-  // Pointer to next recipes, setted after each fetch
-  const [next, setNext] = useState("");
-  // Pointer to previous recipes setted  after each fetch
-  const [prev, setPrev] = useState(null);
+  const recipes = useSelector((state) => state.main.fetched_recipe_page.results);
+  const next = useSelector((state) => state.main.fetched_recipe_page.next);
+  const prev = useSelector((state) => state.main.fetched_recipe_page.previous);
+  const filters = useSelector((state) => state.main.own_recipes_filters);
   const dispach = useDispatch();
 
   useEffect(() => {
-    async function getRecipes() {
-      // Fetch first page
-      let recipes = await dispach(getPublicRecipes("", recipes_per_page));
-      setNext(recipes.next);
-      setPrev(recipes.previous);
-      setRecipes(recipes.results);
-    }
-    getRecipes();
-  }, [filters, recipes_per_page, dispach]);
+    dispach(getPublicRecipes("", recipes_per_page));
+  }, [recipes_per_page, dispach, filters]);
+
 
   async function nextRecipes() {
     if (next !== null) {
-      recipes = await dispach(getPublicRecipes(next, recipes_per_page));
-      setNext(recipes.next);
-      setPrev(recipes.previous);
-      setRecipes(recipes.results);
+      await dispach(getPublicRecipes(next, recipes_per_page));
       setCurrentPage(currentPage + 1);
     }
   }
 
   async function prevRecipes() {
     if (prev !== null) {
-      recipes = await dispach(getPublicRecipes(prev, recipes_per_page));
-      setNext(recipes.next);
-      setPrev(recipes.previous);
-      setRecipes(recipes.results);
+      await dispach(getPublicRecipes(prev, recipes_per_page));
       setCurrentPage(currentPage - 1);
     }
   }
@@ -77,10 +63,10 @@ function BrowseRecipesList({ recipes_per_page }) {
           <Recipe
             id={recipe.id}
             key={recipe.id}
-            recipe={recipe}
             index={index}
             edit={true}
             icon_set={2}
+            browse={true}
           />
         ))}
       </div>

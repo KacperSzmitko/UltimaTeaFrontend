@@ -36,6 +36,7 @@ function Filters({ customSubmit }) {
       brewing_time_up: brewingTimeUp,
       mixing_time_down: mixingTimeDown,
       mixing_time_up: mixingTimeUp,
+      min_score: minScore,
     };
     dispach(updateFilters(data));
   }
@@ -51,6 +52,7 @@ function Filters({ customSubmit }) {
     setbrewingTimeUp(-1);
     setmixingTimeDown(-1);
     setmixingTimeUp(-1);
+    setMinScore(-1);
   }
 
   useEffect(() => {
@@ -118,6 +120,22 @@ function Filters({ customSubmit }) {
               {ingredients.map((ingredient) => (
                 <option value={ingredient.id} key={ingredient.id}>
                   {ingredient.ingredient_name}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group
+            className="filters_input"
+            controlId="OwnRecipes.RateInput"
+          >
+            <Form.Label className="filter_label">Minimalna ocena</Form.Label>
+            <Form.Select onChange={(e) => setMinScore(e.target.value)}>
+              <option value={null}> </option>
+              {[1,2,3,4,5].map((val, index) => (
+                <option value={index + 1} key={index}>
+                  {" "}
+                  {index + 1}{" "}
                 </option>
               ))}
             </Form.Select>

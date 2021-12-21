@@ -14,6 +14,9 @@ import {
   DELETE_RECIPE,
   CREATE_RECIPE,
   EDIT_RECIPE,
+  CHANGE_PUBLIC_STATUS,
+  FETCH_PUBLIC_RECIPES,
+  EDIT_RECIPE_SCORE,
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
@@ -153,12 +156,18 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
   if (url !== "") {
     response = axios
       .get(url, config)
-      .then((response) => response.data)
+      .then((response) => {
+        dispach({ type: FETCH_PUBLIC_RECIPES, payload: response.data });
+        return response.data;
+      })
       .catch((e) => []);
   } else {
     response = axios
       .get("/public_recipes/", config)
-      .then((response) => response.data)
+      .then((response) => {
+        dispach({ type: FETCH_PUBLIC_RECIPES, payload: response.data });
+        return response.data;
+      })
       .catch((e) => []);
   }
   return response;
@@ -282,20 +291,18 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
-function formatResponse(data, getState){
-return {
-        ...data,
-        ingredients: data.ingredients.map((ing) => ({
-          ammount: ing.ammount,
-          id: ing.id,
-          ingredient: getState().main.ingredients.find(
-            (ingredient) => ingredient.id === ing.ingredient_id
-          ),
-        })),
-        tea_type: getState().main.teas.find(
-          (tea) => tea.id === data.tea_type
-        ),
-      }
+function formatResponse(data, getState) {
+  return {
+    ...data,
+    ingredients: data.ingredients.map((ing) => ({
+      ammount: ing.ammount,
+      id: ing.id,
+      ingredient: getState().main.ingredients.find(
+        (ingredient) => ingredient.id === ing.ingredient_id
+      ),
+    })),
+    tea_type: getState().main.teas.find((tea) => tea.id === data.tea_type),
+  };
 }
 
 const createRecipe = (data) => (dispach, getState) => {
@@ -303,6 +310,7 @@ const createRecipe = (data) => (dispach, getState) => {
   axios
     .post("/recipes/", data, config)
     .then((r) => {
+      console.log(formatResponse(r.data, getState));
       dispach({
         type: CREATE_RECIPE,
         payload: formatResponse(r.data, getState),
@@ -312,16 +320,14 @@ const createRecipe = (data) => (dispach, getState) => {
 };
 
 /**
- * 
- * @param {*} data 
- * @param {*} recipe_id 
+ *
+ * @param {*} data
+ * @param {*} recipe_id
  * @param {*} patch PUT or PATCH
- * @returns 
+ * @returns
  */
 const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
-  console.log(data);
-  console.log(method);
   axios({
     method: method,
     url: `/recipes/${recipe_id}/`,
@@ -335,6 +341,57 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
       });
     })
     .catch((e) => console.log(e.response.data));
+};
+
+/**
+ *
+ * @param {*} recipe_id
+ * @param {*} status is_public new status
+ */
+const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  axios
+    .patch(`/recipes/${recipe_id}/`, { is_public: status }, config)
+    .then((r) =>
+      dispach({
+        type: CHANGE_PUBLIC_STATUS,
+        payload: { is_public: r.data.is_public, id: recipe_id },
+      })
+    )
+    .catch((e) => console.log(e.response.data));
+};
+
+/**
+ *
+ * @param {*} recipe_id
+ * @param {*} score
+ * @param {*} edit If true then PUT is sended, otherwise POST
+ * @returns Updated score
+ */
+const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+  if (edit) {
+    const data = axios
+      .put(`/recipes/${recipe_id}/vote/`, { score: score }, config)
+      .then( (r) =>
+        dispach({ 
+          type: EDIT_RECIPE_SCORE,
+          payload: { id: recipe_id, score: r.data.score },
+        })
+      )
+      .catch((e) => console.log(e.response.data));
+    return data;
+  } else {
+    const data = axios
+      .post(`/recipes/${recipe_id}/vote/`, { score: score }, config)
+      .then((r) =>
+        dispach({
+          type: EDIT_RECIPE_SCORE,
+          payload: { id: recipe_id, score: r.data.score },
+        })
+      )
+      .catch((e) => console.log(e.response.data));
+  }
 };
 
 export {
@@ -351,4 +408,6 @@ export {
   deleteOwnRecipe,
   createRecipe,
   editRecipe,
+  changePublicStatus,
+  recipeVote,
 };
