@@ -17,6 +17,8 @@ import {
   CHANGE_PUBLIC_STATUS,
   FETCH_PUBLIC_RECIPES,
   EDIT_RECIPE_SCORE,
+  FETCH_MACHINE,
+  TEA_DONE,
 } from "../actions/types";
 
 const initialState = {
@@ -48,10 +50,12 @@ const initialState = {
   fetched_recipes: false,
   fetched_teas: false,
   fetched_ingredients: false,
+  fetched_machine: false,
   recipes: [],
   own_recipes_filters: {},
   ingredients: [],
   teas: [],
+  machine: {},
   tea_making_status: 0,
   selected_recipe: null,
   create_tab_active: false,
@@ -62,10 +66,16 @@ const initialState = {
     next: null,
     previous: null,
   },
+  making_recipe: null
 };
 
 const reducer = function (state = initialState, action) {
   switch (action.type) {
+    case TEA_DONE:
+      return {
+        ...state,
+        making_recipe : null,
+      };
     case EDIT_RECIPE_SCORE:
       return {
         ...state,
@@ -137,8 +147,13 @@ const reducer = function (state = initialState, action) {
         fetched_teas: true,
         teas: action.payload,
       };
+    case FETCH_MACHINE:
+      return {
+        ...state,
+        fetched_machine: true,
+        machine: action.payload,
+      };
     case UPDATE_FILTERS:
-      console.log(action.payload);
       return {
         ...state,
         own_recipes_filters: action.payload,
@@ -175,6 +190,9 @@ const reducer = function (state = initialState, action) {
       return {
         ...state,
         tea_making_status: 1,
+        making_recipe: state.recipes.find(
+          (recipe) => recipe.id === action.payload.recipe_id
+        ),
       };
     case EDIT_SELECTED_RECIPE:
       return {

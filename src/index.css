@@ -93,6 +93,7 @@ html {
   text-align: right;
   color: white;
   height: 100%;
+  transition: width 1s linear;
 }
 
 .water_bar {
@@ -145,7 +146,7 @@ html {
 
 #main_row {
   display: flex;
-  height: 100%;
+  height: 92%;
 }
 
 #main_content {
@@ -238,7 +239,7 @@ html {
 
 #machine_containers {
   display: flex;
-  width: 75%;
+  flex: 3;
   justify-content: flex-end;
 }
 
@@ -319,7 +320,7 @@ html {
 }
 
 #filters_title {
-  font-size: x-large;
+  font-size: 2.5vh;
 }
 
 .filters_input {
@@ -328,16 +329,7 @@ html {
   margin-bottom: 5%;
 }
 
-.edit_recipes_list {
-  flex: 5;
-}
 
-.edit_recipes_list {
-  display: flex;
-  flex-wrap: wrap;
-  row-gap: 2%;
-  margin-bottom: 2%;
-}
 
 .edit_recipe {
   background-color: white;
@@ -633,4 +625,92 @@ html {
 
 .time_section {
   height: 35%;
+}
+
+.edit_recipes_list {
+    flex: 5;
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 2%;
+  margin-bottom: 2%;
+}
+
+@media only screen and (max-height: 1100px){
+.form-control{
+  padding: 0 !important;
+}
+.form-select{
+  padding: 0 !important;
+}
+.filters_input{
+  margin-bottom: 2%;
+}
+.h4{
+  font-size: 2.7vh !important;
+}
+.h5{
+  font-size: 2.2vh !important;
+  margin-bottom: 0.2vh !important;
+}
+.h6{
+  font-size: 1.7vh !important;
+}
+.recipe_section{
+  margin-bottom: 5%;
+}
+.filter_btn{
+  padding: 0 !important;
+}
+.score{
+  padding-bottom: 3.5%;
+}
+}
+
+.machine_status_dot{
+  height: 25px;
+  width: 25px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.machine_on{
+  background-color: green;
+}
+
+.machine_off{
+  background-color: red;
+}
+
+#statuses{
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+}
+
+.machine_status{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+    margin-right: 15%;
+  padding-left: 15%;
+}
+
+.tea_making_status{
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.loader {
+background-color: white;
+border-radius: 50%;
+  height: 25px;
+  width: 25px;
+  animation: spin 2s linear;
+  border: solid 6px aqua;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(72deg); }
 }

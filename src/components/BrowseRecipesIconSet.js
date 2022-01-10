@@ -34,6 +34,7 @@ function BrowseRecipesIconSet({ recipe }) {
   }
 
   function sendRate(score) {
+    console.log(score);
     dispach(recipeVote(recipe.id, score, recipe.voted));
   }
 

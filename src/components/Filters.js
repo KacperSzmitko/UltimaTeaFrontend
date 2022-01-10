@@ -132,7 +132,7 @@ function Filters({ customSubmit }) {
             <Form.Label className="filter_label">Minimalna ocena</Form.Label>
             <Form.Select onChange={(e) => setMinScore(e.target.value)}>
               <option value={null}> </option>
-              {[1,2,3,4,5].map((val, index) => (
+              {[1, 2, 3, 4, 5].map((val, index) => (
                 <option value={index + 1} key={index}>
                   {" "}
                   {index + 1}{" "}
@@ -201,12 +201,13 @@ function Filters({ customSubmit }) {
           </Form.Group>
         </div>
         <div id="filters_btns">
-          <Button type="submit" id="submit_filters_btn">
+          <Button type="submit" id="submit_filters_btn" className="filter_btn">
             Filtruj
           </Button>
           <Button
             type="button"
             onClick={() => document.getElementById("filters_forms").reset()}
+            className="filter_btn"
           >
             Resetuj
           </Button>

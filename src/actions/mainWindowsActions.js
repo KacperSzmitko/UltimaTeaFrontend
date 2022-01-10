@@ -17,6 +17,7 @@ import {
   CHANGE_PUBLIC_STATUS,
   FETCH_PUBLIC_RECIPES,
   EDIT_RECIPE_SCORE,
+  FETCH_MACHINE,
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
@@ -126,6 +127,24 @@ const getTeas = () => (dispach, getState) => {
       console.log(e.response.data);
     });
 };
+
+const getMachine = () => (dispach, getState) => {
+  let config = createConfig(getState().auth.token);
+    axios
+      .get("/machine/", config)
+      .then((response) => {
+        dispach({ type: FETCH_MACHINE, payload: response.data[0] });
+      })
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+        console.log(e.response.data);
+      });
+}
+
+
 /**
  *
  * @param {*} data Current full state of filters
@@ -240,10 +259,14 @@ const changeContainers =
  */
 const makeTea = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
-  axios
-    .post("/send_recipe/", { id: recipe_id }, config)
-    .then(() => dispach({ type: MAKE_TEA }))
-    .catch((e) => console.log(e.response.data));
+  if (getState().main.making_recipe !== null){
+    console.log("Tea is alredy in progress");
+    return;
+  }
+    axios
+      .post("/send_recipe/", { id: recipe_id }, config)
+      .then(() => dispach({ type: MAKE_TEA, payload: recipe_id }))
+      .catch((e) => console.log(e.response.data));
 };
 
 /**
@@ -380,7 +403,7 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
         })
       )
       .catch((e) => console.log(e.response.data));
-    return data;
+      return data;
   } else {
     const data = axios
       .post(`/recipes/${recipe_id}/vote/`, { score: score }, config)
@@ -391,7 +414,9 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
         })
       )
       .catch((e) => console.log(e.response.data));
+      return data;
   }
+
 };
 
 export {
@@ -410,4 +435,5 @@ export {
   editRecipe,
   changePublicStatus,
   recipeVote,
+  getMachine,
 };

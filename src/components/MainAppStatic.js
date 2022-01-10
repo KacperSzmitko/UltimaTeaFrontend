@@ -6,13 +6,15 @@ import { Outlet } from "react-router-dom";
 import Containers from "./Containers";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getUserRecipes, getIngredients, getTeas } from "../actions/mainWindowsActions";
+import { getUserRecipes, getIngredients, getTeas, getMachine } from "../actions/mainWindowsActions";
+import Statuses from "./Statuses";
 
 //var classNames = require("classnames");
 
 export default function MainAppStatic() {
   const dispach = useDispatch();
   const fetched_recipes = useSelector((state) => state.main.fetched_recipes);
+  const fetched_machine = useSelector((state) => state.main.fetched_machine);
   const fetched_ingredients = useSelector(
     (state) => state.main.fetched_ingredients
   );
@@ -22,12 +24,14 @@ export default function MainAppStatic() {
     if (!fetched_recipes) dispach(getUserRecipes());
     if (!fetched_ingredients) dispach(getIngredients());
     if (!fetched_teas) dispach(getTeas());
+    if (!fetched_machine) dispach(getMachine());
   }, [fetched_recipes,fetched_ingredients,fetched_teas, dispach]);
 
   return (
     <div id="app_container">
       <PrivateRoute>
         <div id="containers_row">
+          <Statuses />
           <Containers />
         </div>
         <div id="main_row">
