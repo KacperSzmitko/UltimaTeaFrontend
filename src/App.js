@@ -30,7 +30,6 @@ function App() {
           <Route path="edit_recipes" element={<EditRecipes/>}></Route>
           <Route path="public_recipes" element={<BrowseRecipes/>}></Route>
           <Route path="edit_containers" element={<EditContainers />}></Route>
-          <Route path="machine_status"></Route>
           <Route path="edit_profile" element={<EditProfile />}></Route>
         </Route>
       </Routes>

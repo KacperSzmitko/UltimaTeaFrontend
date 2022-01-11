@@ -18,11 +18,6 @@ export default function NavBar() {
         link="edit_containers"
         id="edit_containers"
       />
-      <NavItem
-        text="Status urządzenia"
-        link="machine_status"
-        id="machine_status"
-      />
       <NavItem text="Edytuj profil" link="edit_profile" id="eidt_profile" />
     </div>
   );

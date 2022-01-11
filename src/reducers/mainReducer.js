@@ -66,7 +66,7 @@ const initialState = {
     next: null,
     previous: null,
   },
-  making_recipe: null
+  making_recipe: null,
 };
 
 const reducer = function (state = initialState, action) {
@@ -74,7 +74,7 @@ const reducer = function (state = initialState, action) {
     case TEA_DONE:
       return {
         ...state,
-        making_recipe : null,
+        making_recipe: null,
       };
     case EDIT_RECIPE_SCORE:
       return {
@@ -162,12 +162,18 @@ const reducer = function (state = initialState, action) {
       if (state.tea_container1.id === action.payload.id)
         return {
           ...state,
-          tea_container1: { ...state.tea_container1, tea: action.payload.tea },
+          tea_container1: {
+            ...state.tea_container1,
+            tea: action.payload.tea.id !== null ? action.payload.tea : null,
+          },
         };
       else
         return {
           ...state,
-          tea_container2: { ...state.tea_container2, tea: action.payload.tea },
+          tea_container2: {
+            ...state.tea_container2,
+            tea: action.payload.tea.id !== null ? action.payload.tea : null,
+          },
         };
     case UPDATE_ING_CONTAINERS:
       if (state.ingredient_container1.id === action.payload.id)
@@ -175,7 +181,8 @@ const reducer = function (state = initialState, action) {
           ...state,
           ingredient_container1: {
             ...state.ingredient_container1,
-            ingredient: action.payload.ing,
+            ingredient:
+              action.payload.ing.id !== null ? action.payload.ing : null,
           },
         };
       else
@@ -183,7 +190,8 @@ const reducer = function (state = initialState, action) {
           ...state,
           ingredient_container2: {
             ...state.ingredient_container2,
-            ingredient: action.payload.ing,
+            ingredient:
+              action.payload.ing.id !== null ? action.payload.ing : null,
           },
         };
     case MAKE_TEA:

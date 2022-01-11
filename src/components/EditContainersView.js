@@ -19,25 +19,35 @@ function EditContainers() {
   const ingContainer2 = useSelector(
     (state) => state.main.ingredient_container2
   );
-  const [tea1, setTea1] = useState(teaContainer1.tea.id);
-  const [tea2, setTea2] = useState(teaContainer2.tea.id);
-  const [ingredient1, setIngredient1] = useState(
-    ingContainer1.ingredient.Ammount
+  const [tea1, setTea1] = useState(() =>
+    teaContainer1.tea !== null ? teaContainer1.tea.id : null
   );
-  const [ingredient2, setIngredient2] = useState(ingContainer2.ingredient.id);
+  const [tea2, setTea2] = useState(() =>
+    teaContainer2.tea !== null ? teaContainer2.tea.id : null
+  );
+  const [ingredient1, setIngredient1] = useState(() =>
+    ingContainer1.ingredient !== null ? ingContainer1.ingredient.id : null
+  );
+  const [ingredient2, setIngredient2] = useState(
+    ingContainer2.ingredient !== null ? ingContainer2.ingredient.id : null
+  );
 
   const dispach = useDispatch();
 
   useEffect(() => {
-    setTea1(teaContainer1.tea.id);
-    setTea2(teaContainer2.tea.id);
-    setIngredient1(ingContainer1.ingredient.id);
-    setIngredient2(ingContainer2.ingredient.id);
+    setTea1(teaContainer1.tea !== null ? teaContainer1.tea.id : null);
+    setTea2(teaContainer2.tea !== null ? teaContainer2.tea.id : null);
+    setIngredient1(
+      ingContainer1.ingredient !== null ? ingContainer1.ingredient.id : null
+    );
+    setIngredient2(
+      ingContainer2.ingredient !== null ? ingContainer2.ingredient.id : null
+    );
   }, [
-    ingContainer1.ingredient.id,
-    ingContainer2.ingredient.id,
-    teaContainer1.tea.id,
-    teaContainer2.tea.id,
+    ingContainer1.ingredient,
+    ingContainer2.ingredient,
+    teaContainer1.tea,
+    teaContainer2.tea,
   ]);
 
   function onSubmit(e) {
@@ -45,23 +55,46 @@ function EditContainers() {
     let tea_containers = [];
     let ing_containers = [];
 
-    if (teaContainer1.tea.id !== tea1) {
-      tea_containers.push({ id: teaContainer1.id, tea: tea1 });
+    if (teaContainer1.tea !== null){
+      if (teaContainer1.tea.id !== tea1) {
+        tea_containers.push({ id: teaContainer1.id, tea: tea1 });
+      }
     }
-    if (teaContainer2.tea.id !== tea2) {
-      tea_containers.push({ id: teaContainer2.id, tea: tea2 });
+    else{
+      if (tea1 !== null){
+        tea_containers.push({ id: teaContainer1.id, tea: tea1 });
+      }
     }
-    if (ingContainer1.ingredient.id !== ingredient1) {
-      ing_containers.push({
-        id: ingContainer1.id,
-        ing: ingredient1,
-      });
+
+    if (teaContainer2.tea !== null){
+      if (teaContainer2.tea.id !== tea2) {
+        tea_containers.push({ id: teaContainer2.id, tea: tea2 });
+      }
     }
-    if (ingContainer2.ingredient.id !== ingredient2) {
-      ing_containers.push({
-        id: ingContainer2.id,
-        ing: ingredient2,
-      });
+    else{
+      if (tea2 !== null){
+        tea_containers.push({ id: teaContainer2.id, tea: tea2 });
+      }
+    }
+
+    if (ingContainer1.ingredient !== null) {
+      if (ingContainer1.ingredient.id !== ingredient1) {
+        ing_containers.push({ id: ingContainer1.id, ing: ingredient1 });
+      }
+    } else {
+      if (ingredient1 !== null) {
+        ing_containers.push({ id: ingContainer1.id, ing: ingredient1 });
+      }
+    }
+
+    if (ingContainer2.ingredient !== null) {
+      if (ingContainer2.ingredient.id !== ingredient2) {
+        ing_containers.push({ id: ingContainer2.id, ing: ingredient2 });
+      }
+    } else {
+      if (ingredient2 !== null) {
+        ing_containers.push({ id: ingContainer2.id, ing: ingredient2 });
+      }
     }
     dispach(changeContainers(tea_containers, ing_containers));
   }
@@ -78,11 +111,17 @@ function EditContainers() {
               onChange={(e) => setTea1(parseInt(e.target.value))}
               className="edit_containers_select"
             >
-              <option value={teaContainer1.tea.id}>
-                {teaContainer1.tea.tea_name}
+              <option
+                value={teaContainer1.tea !== null ? teaContainer1.tea.id : null}
+              >
+                {teaContainer1.tea !== null ? teaContainer1.tea.tea_name : null}
               </option>
               {teas
-                .filter((tea) => tea.id !== teaContainer1.tea.id)
+                .filter((tea) =>
+                  teaContainer1.tea !== null
+                    ? tea.id !== teaContainer1.tea.id
+                    : true
+                )
                 .map((tea) => (
                   <option value={tea.id} key={tea.id}>
                     {" "}
@@ -90,7 +129,8 @@ function EditContainers() {
                   </option>
                 ))}
             </Form.Select>
-            <ContainerItem edit={true}
+            <ContainerItem
+              edit={true}
               id="edit_tea_container1"
               containerName="tea_container1"
             />
@@ -104,11 +144,17 @@ function EditContainers() {
               onChange={(e) => setTea2(parseInt(e.target.value))}
               className="edit_containers_select"
             >
-              <option value={teaContainer2.tea.id}>
-                {teaContainer2.tea.tea_name}
+              <option
+                value={teaContainer2.tea !== null ? teaContainer2.tea.id : null}
+              >
+                {teaContainer2.tea !== null ? teaContainer2.tea.tea_name : null}
               </option>
               {teas
-                .filter((tea) => tea.id !== teaContainer2.tea.id)
+                .filter((tea) =>
+                  teaContainer2.tea !== null
+                    ? tea.id !== teaContainer2.tea.id
+                    : true
+                )
                 .map((tea) => (
                   <option value={tea.id} key={tea.id}>
                     {" "}
@@ -116,7 +162,8 @@ function EditContainers() {
                   </option>
                 ))}
             </Form.Select>
-            <ContainerItem edit={true}
+            <ContainerItem
+              edit={true}
               id="edit_tea_container2"
               containerName="tea_container2"
             />
@@ -130,12 +177,22 @@ function EditContainers() {
               onChange={(e) => setIngredient1(parseInt(e.target.value))}
               className="edit_containers_select"
             >
-              <option value={ingContainer1.ingredient.id}>
-                {ingContainer1.ingredient.ingredient_name}
+              <option
+                value={
+                  ingContainer1.ingredient !== null
+                    ? ingContainer1.ingredient.id
+                    : null
+                }
+              >
+                {ingContainer1.ingredient !== null
+                  ? ingContainer1.ingredient.ingredient_name
+                  : null}
               </option>
               {ingredients
-                .filter(
-                  (ingredient) => ingredient.id !== ingContainer1.ingredient.id
+                .filter((ingredient) =>
+                  ingContainer1.ingredient !== null
+                    ? ingredient.id !== ingContainer1.ingredient.id
+                    : true
                 )
                 .map((ingredient) => (
                   <option value={ingredient.id} key={ingredient.id}>
@@ -144,7 +201,8 @@ function EditContainers() {
                   </option>
                 ))}
             </Form.Select>
-            <ContainerItem edit={true}
+            <ContainerItem
+              edit={true}
               id="edit_ingredient_container1"
               containerName="ingredient_container1"
             />
@@ -158,12 +216,22 @@ function EditContainers() {
               onChange={(e) => setIngredient2(parseInt(e.target.value))}
               className="edit_containers_select"
             >
-              <option value={ingContainer2.ingredient.id}>
-                {ingContainer2.ingredient.ingredient_name}
+              <option
+                value={
+                  ingContainer2.ingredient !== null
+                    ? ingContainer2.ingredient.id
+                    : null
+                }
+              >
+                {ingContainer2.ingredient !== null
+                  ? ingContainer2.ingredient.ingredient_name
+                  : null}
               </option>
               {ingredients
-                .filter(
-                  (ingredient) => ingredient.id !== ingContainer2.ingredient.id
+                .filter((ingredient) =>
+                  ingContainer2.ingredient !== null
+                    ? ingredient.id !== ingContainer2.ingredient.id
+                    : true
                 )
                 .map((ingredient) => (
                   <option value={ingredient.id} key={ingredient.id}>
@@ -172,7 +240,8 @@ function EditContainers() {
                   </option>
                 ))}
             </Form.Select>
-            <ContainerItem edit={true}
+            <ContainerItem
+              edit={true}
               id="edit_ingredient_container2"
               containerName="ingredient_container2"
             />

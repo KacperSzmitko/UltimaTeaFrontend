@@ -11,13 +11,23 @@ function ContainerItem({ id, containerName, edit = false }) {
 
   useEffect(() => {
     if ("ingredient" in container) {
-      setName(container.ingredient.ingredient_name);
-      setFill(
-        (container.ammount / container.ingredient.density / MAX_ING) * 100
-      );
+      if (container.ingredient === null) {
+        setName("Pusty");
+        setFill(0);
+      } else {
+        setName(container.ingredient.ingredient_name);
+        setFill(
+          (container.ammount / container.ingredient.density / MAX_ING) * 100
+        );
+      }
     } else if ("tea" in container) {
-      setName(container.tea.tea_name);
-      setFill((container.ammount / container.tea.density / MAX_TEA) * 100);
+      if (container.tea === null) {
+        setName("Pusty");
+        setFill(0);
+      } else {
+        setName(container.tea.tea_name);
+        setFill((container.ammount / container.tea.density / MAX_TEA) * 100);
+      }
     } else {
       setName("Woda");
       setFill((container.ammount / 0.997 / MAX_WATER) * 100);
