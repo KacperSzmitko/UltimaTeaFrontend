@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  ut_frontend:
+    build: ./ut_frontend
+    ports:
+      - "3000:3000"
+  nginx:
+    build: ./nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - ut_frontend
+
