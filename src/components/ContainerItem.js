@@ -17,7 +17,7 @@ function ContainerItem({ id, containerName, edit = false }) {
       } else {
         setName(container.ingredient.ingredient_name);
         setFill(
-          (container.ammount / container.ingredient.density / MAX_ING) * 100
+          parseInt((container.ammount / container.ingredient.density / MAX_ING) * 100)
         );
       }
     } else if ("tea" in container) {
@@ -26,11 +26,11 @@ function ContainerItem({ id, containerName, edit = false }) {
         setFill(0);
       } else {
         setName(container.tea.tea_name);
-        setFill((container.ammount / container.tea.density / MAX_TEA) * 100);
+        setFill(parseInt((container.ammount / container.tea.density / MAX_TEA) * 100));
       }
     } else {
       setName("Woda");
-      setFill((container.ammount / 0.997 / MAX_WATER) * 100);
+      setFill(parseInt((container.ammount / 0.997 / MAX_WATER) * 100));
     }
   }, [container]);
 
