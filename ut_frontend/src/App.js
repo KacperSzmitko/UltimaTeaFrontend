@@ -26,12 +26,13 @@ function App() {
         />
         <Route path="reset_password" element={<ResetPasswordForm />} />
         <Route path="app" element={<MainAppStatic />}>
-          <Route path="make_tea" element={<MakeTea/>}></Route>
-          <Route path="edit_recipes" element={<EditRecipes/>}></Route>
-          <Route path="public_recipes" element={<BrowseRecipes/>}></Route>
+          <Route path="make_tea" element={<MakeTea />}></Route>
+          <Route path="edit_recipes" element={<EditRecipes />}></Route>
+          <Route path="public_recipes" element={<BrowseRecipes />}></Route>
           <Route path="edit_containers" element={<EditContainers />}></Route>
           <Route path="edit_profile" element={<EditProfile />}></Route>
         </Route>
+        <Route path="*" element={<MainAppStatic redirect={true}/>}></Route>
       </Routes>
     </div>
   );
