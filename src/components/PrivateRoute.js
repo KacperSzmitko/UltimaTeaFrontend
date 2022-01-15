@@ -13,12 +13,15 @@ export default function PrivateRoute({ children, redirect }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    check_token(storeToken).then((response) => {
-      if (response.status === 200) {
-        if (redirect) navigate("app/make_tea");
-        setIsValid(true);
-      } else setWait(false);
-    });
+    if (storeToken !== ""){
+      check_token(storeToken).then((response) => {
+        if (response.status === 200) {
+          if (redirect) navigate("app/make_tea");
+          setIsValid(true);
+        } else setWait(false);
+      });
+    }
+    else setWait(false);
   }, [storeToken, dispach, navigate]);
   if (isValid) return children;
   if (!isValid && wait) return null;
