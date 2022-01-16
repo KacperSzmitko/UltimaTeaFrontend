@@ -3,6 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { connect } from "react-redux";
 import { register } from "../actions/authActions";
 
+const PASSSWORD_MIN_LEN = 8;
+
 //var classNames = require("classnames");
 
 export class RegisterForm extends Component {
@@ -13,6 +15,8 @@ export class RegisterForm extends Component {
     this.onPasswordChange = this.onPasswordChange.bind(this);
     this.onRePasswordChange = this.onRePasswordChange.bind(this);
     this.onMachineChange = this.onMachineChange.bind(this);
+
+    this.userInputErrors = "";
 
     this.state = {
       isPasswordValid: false,
@@ -62,20 +66,24 @@ export class RegisterForm extends Component {
   }
 
   onPasswordChange(e) {
-    this.setState({ password: e.target.value }, () => this.validatePassword());
+    this.setState({ password: e.target.value }, () => {
+      this.validatePassword();
+    });
+    
   }
 
   onRePasswordChange(e) {
-    this.setState({ rePassword: e.target.value }, () =>
-      this.validateRePassword()
-    );
+    this.setState({ rePassword: e.target.value }, () => {
+      this.validateRePassword();
+    });
+    
   }
 
   validateRePassword() {
     if (this.state.password === this.state.rePassword) {
-      this.setState({ rePasswordValid: true });
+      this.setState({ rePasswordValid: true }, () => this.validateInputErrors());
     } else {
-      this.setState({ rePasswordValid: false });
+      this.setState({ rePasswordValid: false }, () => this.validateInputErrors());
     }
   }
 
@@ -85,28 +93,68 @@ export class RegisterForm extends Component {
         "(?=.*[?!.!\"#%&'()*+,-./:<>=?@\\[\\]^_{}|~$])"
       ) != null
     ) {
-      this.setState({ passwordSpecialCharacter: true });
+      var passwordSpecialCharacter = true;
     } else {
-      this.setState({ passwordSpecialCharacter: false });
+      var passwordSpecialCharacter = false;
     }
 
-    if (this.state.password.length >= 8) {
-      this.setState({ passwordLength: true });
+    if (this.state.password.length >= PASSSWORD_MIN_LEN) {
+      var passwordLength = true;
     } else {
-      this.setState({ passwordLength: false });
+      var passwordLength = false;
     }
 
     if (this.state.password.match("(?=.*[A-Z])")) {
-      this.setState({ passwordBigLetter: true });
+      var passwordBigLetter = true;
     } else {
-      this.setState({ passwordBigLetter: false });
+      var passwordBigLetter = false;
     }
 
     if (this.state.password.match("(?=.*[0-9])")) {
-      this.setState({ passwordDigit: true });
+      var passwordDigit = true;
     } else {
-      this.setState({ passwordDigit: false });
+      var passwordDigit = false;
     }
+
+    this.setState(
+      {
+        passwordSpecialCharacter: passwordSpecialCharacter, 
+        passwordLength: passwordLength, 
+        passwordBigLetter: passwordBigLetter,
+        passwordDigit: passwordDigit
+      },
+      () => this.validateInputErrors()
+    );
+  }
+
+  validateInputErrors() {
+
+    this.userInputErrors = "";
+
+    if (!this.state.isPasswordValid) {
+      this.userInputErrors += "<div>Hasło nie jest poprawne</div>";
+    }
+
+    if (!this.state.passwordSpecialCharacter) {
+      this.userInputErrors += "<div>Hasło musi posiadać znak specjalny</div>";
+    }
+
+    if (!this.state.passwordBigLetter) {
+      this.userInputErrors += "<div>Hasło musi zawierać dużą literę</div>";
+    }
+
+    if (!this.state.passwordLength) {
+      this.userInputErrors += "<div>Hasło musi być dłuższe niż " + PASSSWORD_MIN_LEN + " znaków</div>";
+    }
+
+    if (!this.state.passwordDigit) {
+      this.userInputErrors += "<div>Hasło musi zawierać cyfrę</div>";
+    }
+
+    if (!this.state.rePasswordValid) {
+      this.userInputErrors += "<div>Powtórzone hasło nie jest takie samo</div>";
+    }
+    this.forceUpdate();
   }
 
   render() {
@@ -137,7 +185,8 @@ export class RegisterForm extends Component {
             <Form.Label>Hasło</Form.Label>
             <Form.Control type="password" onChange={this.onRePasswordChange} />
           </Form.Group>
-          <Button type="submit">Zaloguj się</Button>
+          <div dangerouslySetInnerHTML={{__html: this.userInputErrors}}></div>
+          <Button type="submit">Zarejestruj się</Button>
         </Form>
       </div>
     );
