@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Button, Form } from "react-bootstrap";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { register } from "../actions/authActions";
 
 const PASSSWORD_MIN_LEN = 8;

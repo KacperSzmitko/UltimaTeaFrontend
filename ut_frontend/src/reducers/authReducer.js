@@ -4,6 +4,7 @@ import {
   REGISTER,
   REFRESH_TOKEN,
   EXPIRED_TOKEN,
+  REGISTER_FAIL,
 } from "../actions/types";
 
 const initialState = {
@@ -24,6 +25,7 @@ const reducer = function (state = initialState, action) {
         tokenExpired: false,
       };
     case REGISTER:
+      console.log("Token refreshed");
       return { ...state };
     case LOGOUT:
       return { ...state, token: "", refresh: "", isLoged: false };
@@ -41,6 +43,15 @@ const reducer = function (state = initialState, action) {
         ...state,
         tokenExpired: true,
       };
+    case REGISTER_FAIL:
+      console.log("Registration failed");
+      for (var err_name in action.data){
+        for(var message of action.data[err_name])
+        {
+          alert(err_name + ": " + message);
+        }
+      }
+      return { ...state };
     default:
       return state;
   }

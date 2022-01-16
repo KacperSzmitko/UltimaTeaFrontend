@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN } from "./types";
+import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN, REGISTER_FAIL } from "./types";
 import axios from "axios";
 
 const createConfig = (token) => ({
@@ -25,7 +25,9 @@ const register = (data) => (dispach) => {
   axios
     .post("/user/", data)
     .then(() => dispach({ type: REGISTER }))
-    .catch((err) => console.log(err.response.data));
+    .catch((err) => {
+      dispach({ type: REGISTER_FAIL, data: err.response.data })
+    });
 };
 
 const reset_password = (data) => (dispach) => {
