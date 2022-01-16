@@ -5,6 +5,7 @@ import {
   REFRESH_TOKEN,
   EXPIRED_TOKEN,
   REGISTER_FAIL,
+  LOGIN_FAIL,
 } from "../actions/types";
 
 const initialState = {
@@ -51,6 +52,9 @@ const reducer = function (state = initialState, action) {
           alert(err_name + ": " + message);
         }
       }
+      return { ...state };
+    case LOGIN_FAIL:
+      alert("Niepoprawny login lub hasło");
       return { ...state };
     default:
       return state;

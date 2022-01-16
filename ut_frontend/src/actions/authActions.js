@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN, REGISTER_FAIL } from "./types";
+import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN, REGISTER_FAIL, LOGIN_FAIL } from "./types";
 import axios from "axios";
 
 const createConfig = (token) => ({
@@ -11,7 +11,7 @@ const login = (email, password) => async (dispach) => {
   let data = { email: email, password: password };
   const response = await axios
     .post("/token/", data)
-    .catch((err) => err.response);
+    .catch((err) => dispach({ type: LOGIN_FAIL, data: err.response }));
   dispach({
     type: LOGIN,
     payload: { token: response.data.access, refresh: response.data.refresh },
