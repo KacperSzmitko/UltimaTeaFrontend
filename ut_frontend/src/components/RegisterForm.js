@@ -19,7 +19,6 @@ export class RegisterForm extends Component {
     this.userInputErrors = "";
 
     this.state = {
-      isPasswordValid: false,
       passwordSpecialCharacter: false,
       passwordBigLetter: false,
       passwordLength: false,
@@ -130,10 +129,6 @@ export class RegisterForm extends Component {
   validateInputErrors() {
 
     this.userInputErrors = "";
-
-    if (!this.state.isPasswordValid) {
-      this.userInputErrors += "<div>Hasło nie jest poprawne</div>";
-    }
 
     if (!this.state.passwordSpecialCharacter) {
       this.userInputErrors += "<div>Hasło musi posiadać znak specjalny</div>";

@@ -128,6 +128,7 @@ const getTeas = () => (dispach, getState) => {
     });
 };
 
+//dev nie ma maszyny
 const getMachine = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
     axios
@@ -192,6 +193,7 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
   return response;
 };
 
+//dev składnik zmieniony, lub nie
 /**
  * Modify tea or ingredient in container
  * @param {[{}]} tea_containers List of tea containers to modify. Single elemtnt is {id: data}
@@ -253,6 +255,7 @@ const changeContainers =
     axios.all(requests);
   };
 
+//dev zlecono albo nie robienie herbaty
 /**
  *
  * @param {*} recipe_id Id of recipe that user want to make
@@ -277,6 +280,7 @@ const editSelectedRecipe = (recipe_id) => (dispach) => {
   dispach({ type: EDIT_SELECTED_RECIPE, payload: recipe_id });
 };
 
+//dev ulubione
 /**
  * Change is_favourite filed of recipe
  * @param {int} recipe_id Id of recipe do edit
@@ -301,6 +305,7 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+//dev usuwanie
 /**
  * Delete own recipe
  * @param {*} recipe_id
@@ -328,6 +333,7 @@ function formatResponse(data, getState) {
   };
 }
 
+//dev create recipe
 const createRecipe = (data) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -342,6 +348,7 @@ const createRecipe = (data) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+//dev recipe edit
 /**
  *
  * @param {*} data
@@ -366,6 +373,7 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+//dev jak się nie uda
 /**
  *
  * @param {*} recipe_id
@@ -384,6 +392,7 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
     .catch((e) => console.log(e.response.data));
 };
 
+//dev głosowanie
 /**
  *
  * @param {*} recipe_id
