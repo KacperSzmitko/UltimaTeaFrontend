@@ -34,7 +34,7 @@ export default function ModalPopUp() {
     return (
         <>
         <Button variant="primary" onClick={handleShow}>
-            Launch demo modal
+            Show notifications
         </Button>
 
         <Modal show={show} onHide={handleClose} className="modalShow" backdropClassName="modalShow">
