@@ -16,7 +16,7 @@ function Statuses() {
     (state) => state.main.machine.state_of_the_tea_making_process
   );
   const making_recipe = useSelector(
-    (state) => state.main.machine.making_recipe
+    (state) => state.main.making_recipe
   );
   const [initUpdate, setInitUpdate] = useState(true);
 

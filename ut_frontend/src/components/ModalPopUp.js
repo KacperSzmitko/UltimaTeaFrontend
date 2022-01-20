@@ -1,18 +1,35 @@
-import React, {Component} from 'react'
-import {Model, Button, Row, Col, Porm} from 'react-bootstrap'
+import React, {useState, useEffect} from 'react'
+import {Modal, Button} from 'react-bootstrap'
+import { useSelector } from "react-redux";
 
-function MaodalPopUp() {
+export default function ModalPopUp() {
     const [show, setShow] = useState(false);
-    const [text, setText] = useState("No text");
 
     const handleClose = () => {
         setShow(false);
-    }
+    };
 
-    const handleShow = (text) => {
-        setText(text);
+    const handleShow = () => {
         setShow(true);
-    }
+    };
+
+    const notifications = useSelector(
+        (state) => state.notifications.notifications
+    );
+
+    useEffect(() => {
+        if (!show && notifications.length !== 0){
+            handleShow();
+        }
+
+        if (show && notifications.length === 0)
+        {
+            handleClose();
+        }
+
+    }, [notifications]);
+
+
 
     return (
         <>
@@ -20,11 +37,11 @@ function MaodalPopUp() {
             Launch demo modal
         </Button>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} className="modalShow" backdropClassName="modalShow">
             <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>Powiadomienie</Modal.Title>
             </Modal.Header>
-            <Modal.Body>Text: {text}</Modal.Body>
+            <Modal.Body><br /> {notifications}</Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
                 Close
@@ -37,8 +54,6 @@ function MaodalPopUp() {
         </>
     );
 }
-
-export default MaodalPopUp;
 
 
 
