@@ -710,7 +710,14 @@ border-radius: 50%;
   border: solid 6px aqua;
 }
 
+.modalShow {
+  margin-top: auto !important;
+  max-height: none !important;
+
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(72deg); }
 }
+

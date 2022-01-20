@@ -9,10 +9,12 @@ import EditRecipes from "./components/EditRecipesView";
 import BrowseRecipes from "./components/BrowseRecipesView";
 import EditContainers from "./components/EditContainersView";
 import EditProfile from "./components/EditProfileView";
+import ModalPopUp from "./components/ModalPopUp";
 
 function App() {
   return (
     <div id="main_window">
+      {<ModalPopUp />}
       <Routes>
         <Route
           path="/"
