@@ -3,6 +3,9 @@ import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { login } from "../actions/authActions";
+import {
+  NOTIFY,
+} from "../actions/types";
 
 //var classNames = require("classnames");
 
@@ -24,7 +27,7 @@ export default function LoginForm(props) {
     e.preventDefault();
     let response = await dispach(login(email, password));
     if (response.status === 200) navigate("app/make_tea");
-    else console.log("Niezalogowano");
+    else dispach({ type: NOTIFY, data: "Błędny login lub hasło"});//console.log("Niezalogowano");
   }
 
   return (
