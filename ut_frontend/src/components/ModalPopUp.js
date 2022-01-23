@@ -63,9 +63,8 @@ export default function ModalPopUp() {
 
         <Modal show={show} onHide={handleClose} className="modalShow" backdropClassName="modalShow">
             <Modal.Header closeButton>
-            <Modal.Title>Powiadomienie</Modal.Title>
             </Modal.Header>
-            <Modal.Body><br /> {notifications}</Modal.Body>
+            <Modal.Body>{notifications}</Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
                 Zamknij
