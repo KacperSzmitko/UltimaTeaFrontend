@@ -27,7 +27,7 @@ export default function LoginForm(props) {
     e.preventDefault();
     let response = await dispach(login(email, password));
     if (response.status === 200) navigate("app/make_tea");
-    else dispach({ type: NOTIFY, data: "Błędny login lub hasło"});//console.log("Niezalogowano");
+    else console.log("Niezalogowano");
   }
 
   return (

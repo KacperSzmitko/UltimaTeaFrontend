@@ -205,6 +205,7 @@ const changeContainers =
   (tea_containers, ing_containers) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
     let requests = [];
+    var error = false;
     // Update all tea containers
     for (const tea_container of tea_containers) {
       requests.push(
@@ -220,7 +221,6 @@ const changeContainers =
                 type: UPDATE_TEA_CONTAINERS,
                 payload: { id: tea_container.id, tea: r.data },
               });
-              dispach({ type: NOTIFY, data: "Zawartość pojemników została zaktualizowana" });
             }
           )
           .catch((e) => {
@@ -230,6 +230,7 @@ const changeContainers =
             }
             console.log(e.response.data);
             dispach({ type: NOTIFY, data: "Nie udało się zaktualizować zawartości pojemników" });
+            error = true;
           })
       );
     }
@@ -258,6 +259,10 @@ const changeContainers =
           })
       );
     }
+    
+    if (!error)
+      dispach({ type: NOTIFY, data: "Zawartość pojemników została zaktualizowana" });
+
     axios.all(requests);
   };
 
