@@ -1,12 +1,17 @@
 import React, {useState, useEffect} from 'react'
 import {Modal, Button} from 'react-bootstrap'
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearNotifications, addNotification } from "../actions/utilActions";
+
 
 export default function ModalPopUp() {
     const [show, setShow] = useState(false);
+    const dispatch = useDispatch();
+
 
     const handleClose = () => {
         setShow(false);
+        dispatch(clearNotifications());
     };
 
     const handleShow = () => {
@@ -16,6 +21,25 @@ export default function ModalPopUp() {
     const notifications = useSelector(
         (state) => state.notifications.notifications
     );
+
+    const authNotification = useSelector(
+        (state) => state.auth.notification
+    );
+
+    const mainNotification = useSelector(
+        (state) => state.main.notification
+    );
+    
+    useEffect(() => {
+        if(authNotification instanceof String || typeof authNotification === 'string')
+        dispatch(addNotification(authNotification))
+    }, [authNotification]);
+
+    useEffect(() => {
+        if(authNotification instanceof String || typeof mainNotification === 'string')
+        dispatch(addNotification(mainNotification))
+    }, [mainNotification]);
+
 
     useEffect(() => {
         if (!show && notifications.length !== 0){
@@ -44,10 +68,7 @@ export default function ModalPopUp() {
             <Modal.Body><br /> {notifications}</Modal.Body>
             <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
-                Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-                Save Changes
+                Zamknij
             </Button>
             </Modal.Footer>
         </Modal>

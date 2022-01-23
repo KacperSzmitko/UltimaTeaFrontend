@@ -1,5 +1,5 @@
 import {
-    NOTIFY,
+    NOTIFY, NOTIFY_CLEAR,
   } from "../actions/types";
   
   const initialState = {
@@ -11,10 +11,15 @@ import {
       case NOTIFY:
         return {
           ...state,
-          notifications: state.notifications.concat(action.data.notification),
+          notifications: state.notifications.concat(action.data),
         };
       default:
         return state;
+      case NOTIFY_CLEAR:
+        return {
+          ...state,
+          notifications: [],
+        };
     }
   };
   

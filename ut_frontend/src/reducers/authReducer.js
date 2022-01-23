@@ -24,10 +24,11 @@ const reducer = function (state = initialState, action) {
         refresh: action.payload.refresh,
         isLoged: true,
         tokenExpired: false,
+        notification: "Welcome to UltimaTea!"
       };
     case REGISTER:
       console.log("Token refreshed");
-      return { ...state };
+      return { ...state,};
     case LOGOUT:
       return { ...state, token: "", refresh: "", isLoged: false };
     case REFRESH_TOKEN:
@@ -45,13 +46,6 @@ const reducer = function (state = initialState, action) {
         tokenExpired: true,
       };
     case REGISTER_FAIL:
-      console.log("Registration failed");
-      for (var err_name in action.data){
-        for(var message of action.data[err_name])
-        {
-          alert(err_name + ": " + message);
-        }
-      }
       return { ...state };
     case LOGIN_FAIL:
       alert("Niepoprawny login lub hasło");
