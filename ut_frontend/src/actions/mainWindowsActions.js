@@ -18,6 +18,7 @@ import {
   FETCH_PUBLIC_RECIPES,
   EDIT_RECIPE_SCORE,
   FETCH_MACHINE,
+  NOTIFY,
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
@@ -142,6 +143,7 @@ const getMachine = () => (dispach, getState) => {
           dispach(refresh_token({ refresh: getState().auth.refresh }));
         }
         console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Maszyna nie istnieje" });
       });
 }
 
@@ -213,10 +215,13 @@ const changeContainers =
             config
           )
           .then((r) =>
-            dispach({
-              type: UPDATE_TEA_CONTAINERS,
-              payload: { id: tea_container.id, tea: r.data },
-            })
+            {
+              dispach({
+                type: UPDATE_TEA_CONTAINERS,
+                payload: { id: tea_container.id, tea: r.data },
+              });
+              dispach({ type: NOTIFY, data: "Zawartość pojemników została zaktualizowana" });
+            }
           )
           .catch((e) => {
             if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -224,6 +229,7 @@ const changeContainers =
               dispach(refresh_token({ refresh: getState().auth.refresh }));
             }
             console.log(e.response.data);
+            dispach({ type: NOTIFY, data: "Nie udało się zaktualizować zawartości pojemników" });
           })
       );
     }
@@ -268,8 +274,14 @@ const makeTea = (recipe_id) => (dispach, getState) => {
   }
     axios
       .post("/send_recipe/", { id: recipe_id }, config)
-      .then(() => dispach({ type: MAKE_TEA, payload: recipe_id }))
-      .catch((e) => console.log(e.response.data));
+      .then(() => {
+        dispach({ type: MAKE_TEA, payload: recipe_id });
+        dispach({ type: NOTIFY, data: "Robienie herbaty zostało zlecone" });
+      })
+      .catch((e) => {
+        console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Nie udało się zlecić robienia herbaty" });
+      });
 };
 
 /**
@@ -297,12 +309,24 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
       config
     )
     .then((r) =>
-      dispach({
-        type: FAVOURITES_EDIT,
-        payload: { is_favourite: r.data.is_favourite, id: recipe_id },
-      })
+      {
+        dispach({
+          type: FAVOURITES_EDIT,
+          payload: { is_favourite: r.data.is_favourite, id: recipe_id },
+        });
+        if(is_favourite)
+          dispach({ type: NOTIFY, data: "Dodano przepis do ulubionych" });
+        else
+          dispach({ type: NOTIFY, data: "Usunięto przepis z ulubionych" });
+      }
     )
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      console.log(e.response.data);
+      if(is_favourite)
+          dispach({ type: NOTIFY, data: "Wystąpił błąd podczas dodawania przepisu do ulubionych" });
+        else
+          dispach({ type: NOTIFY, data: "Wystąpił błąd podczas usuwania przepisu z ulubionych" });
+    });
 };
 
 //dev usuwanie
@@ -315,8 +339,14 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .delete(`/recipes/${recipe_id}`, config)
-    .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
-    .catch((e) => console.log(e.response.data));
+    .then((r) => {
+      dispach({ type: DELETE_RECIPE, payload: recipe_id });
+      dispach({ type: NOTIFY, data: "Przepis został usunięty" });
+    })
+    .catch((e) => {
+      console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się usunąć przepisu" });
+    });
 };
 
 function formatResponse(data, getState) {
@@ -344,8 +374,12 @@ const createRecipe = (data) => (dispach, getState) => {
         type: CREATE_RECIPE,
         payload: formatResponse(r.data, getState),
       });
+      dispach({ type: NOTIFY, data: "Przepis został stworzony" });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się stworzyć przepisu" });
+    });
 };
 
 //dev recipe edit
@@ -369,8 +403,12 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
         type: EDIT_RECIPE,
         payload: { id: recipe_id, data: formatResponse(r.data, getState) },
       });
+      dispach({ type: NOTIFY, data: "Nowa wersja przepisu została zapisana" });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się zedytować przepisu" });
+    });
 };
 
 //dev jak się nie uda
@@ -383,13 +421,17 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .patch(`/recipes/${recipe_id}/`, { is_public: status }, config)
-    .then((r) =>
-      dispach({
+    .then((r) => 
+      {
+        dispach({
         type: CHANGE_PUBLIC_STATUS,
         payload: { is_public: r.data.is_public, id: recipe_id },
-      })
-    )
-    .catch((e) => console.log(e.response.data));
+      });
+    })
+    .catch((e) => {
+      console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się zmienić statusu przepisu" });
+    });
 };
 
 //dev głosowanie
@@ -405,24 +447,36 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
   if (edit) {
     const data = axios
       .put(`/recipes/${recipe_id}/vote/`, { score: score }, config)
-      .then( (r) =>
-        dispach({ 
-          type: EDIT_RECIPE_SCORE,
-          payload: { id: recipe_id, score: r.data.score },
-        })
+      .then( (r) => 
+      {
+          dispach({ 
+            type: EDIT_RECIPE_SCORE,
+            payload: { id: recipe_id, score: r.data.score },
+          });
+          dispach({ type: NOTIFY, data: "Oceniono przepis" });
+      }
       )
-      .catch((e) => console.log(e.response.data));
+      .catch((e) => {
+        console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Nie udało się ocenić przepisu" });
+      });
       return data;
   } else {
     const data = axios
       .post(`/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then((r) =>
-        dispach({
-          type: EDIT_RECIPE_SCORE,
-          payload: { id: recipe_id, score: r.data.score },
-        })
+        {
+          dispach({
+            type: EDIT_RECIPE_SCORE,
+            payload: { id: recipe_id, score: r.data.score },
+          });
+          dispach({ type: NOTIFY, data: "Oceniono przepis" });
+        }
       )
-      .catch((e) => console.log(e.response.data));
+      .catch((e) => {
+        console.log(e.response.data)
+        dispach({ type: NOTIFY, data: "Nie udało się ocenić przepisu" });
+      });
       return data;
   }
 
