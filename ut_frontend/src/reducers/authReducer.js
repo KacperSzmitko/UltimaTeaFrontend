@@ -29,7 +29,7 @@ const reducer = function (state = initialState, action) {
       console.log("Token refreshed");
       return { ...state,};
     case LOGOUT:
-      return { ...state, token: "", refresh: "", isLoged: false };
+      return { ...state, token: "", refresh: "", isLoged: false, notification:"Wylogowano" };
     case REFRESH_TOKEN:
       console.log("Token refreshed");
       return {
