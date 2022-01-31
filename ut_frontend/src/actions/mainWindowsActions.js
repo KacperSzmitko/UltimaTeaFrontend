@@ -28,7 +28,7 @@ import { createConfig, refresh_token } from "./authActions";
 const updateContainers = () => async (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   let water_container = await axios
-    .get("/machine/", config)
+    .get("/api/machine/", config)
     .then((response) => response.data[0].water_container_weight)
     .catch((e) => {
       dispach({ type: EXPIRED_TOKEN });
@@ -36,7 +36,7 @@ const updateContainers = () => async (dispach, getState) => {
     });
   if (water_container === undefined) return;
   axios
-    .get("/machine/containers/", config)
+    .get("/api/machine/containers/", config)
     .then((response) => {
       let data = {
         water_container: { ammount: water_container },
@@ -78,7 +78,7 @@ const updateContainers = () => async (dispach, getState) => {
 const getUserRecipes = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-    .get("/recipes/", config)
+    .get("/api/recipes/", config)
     .then((response) => {
       dispach({ type: FETCH_RECIPES, payload: response.data });
     })
@@ -97,7 +97,7 @@ const getUserRecipes = () => (dispach, getState) => {
 const getIngredients = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-    .get("/ingredients/", config)
+    .get("/api/ingredients/", config)
     .then((response) => {
       dispach({ type: FETCH_INGREDIENTS, payload: response.data });
     })
@@ -116,7 +116,7 @@ const getIngredients = () => (dispach, getState) => {
 const getTeas = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-    .get("/teas/", config)
+    .get("/api/teas/", config)
     .then((response) => {
       dispach({ type: FETCH_TEAS, payload: response.data });
     })
@@ -133,7 +133,7 @@ const getTeas = () => (dispach, getState) => {
 const getMachine = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
     axios
-      .get("/machine/", config)
+      .get("/api/machine/", config)
       .then((response) => {
         dispach({ type: FETCH_MACHINE, payload: response.data[0] });
       })
@@ -185,7 +185,7 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
       .catch((e) => []);
   } else {
     response = axios
-      .get("/public_recipes/", config)
+      .get("/api/public_recipes/", config)
       .then((response) => {
         dispach({ type: FETCH_PUBLIC_RECIPES, payload: response.data });
         return response.data;
@@ -211,7 +211,7 @@ const changeContainers =
       requests.push(
         axios
           .put(
-            `/machine/containers/tea/${tea_container.id}/`,
+            `/api/machine/containers/tea/${tea_container.id}/`,
             { id: tea_container.tea },
             config
           )
@@ -240,7 +240,7 @@ const changeContainers =
       requests.push(
         axios
           .put(
-            `/machine/containers/ingredient/${ing_container.id}/`,
+            `/api/machine/containers/ingredient/${ing_container.id}/`,
             { id: ing_container.ing },
             config
           )
@@ -278,7 +278,7 @@ const makeTea = (recipe_id) => (dispach, getState) => {
     return;
   }
     axios
-      .post("/send_recipe/", { id: recipe_id }, config)
+      .post("/api/send_recipe/", { id: recipe_id }, config)
       .then(() => {
         dispach({ type: MAKE_TEA, payload: recipe_id });
         dispach({ type: NOTIFY, data: "Robienie herbaty zostało zlecone" });
@@ -309,7 +309,7 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .put(
-      `/favourites_edit/${recipe_id}/`,
+      `/api/favourites_edit/${recipe_id}/`,
       { is_favourite: is_favourite },
       config
     )
@@ -343,6 +343,7 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
 const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
+<<<<<<< HEAD
     .delete(`/recipes/${recipe_id}`, config)
     .then((r) => {
       dispach({ type: DELETE_RECIPE, payload: recipe_id });
@@ -352,6 +353,11 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
       console.log(e.response.data);
       dispach({ type: NOTIFY, data: "Nie udało się usunąć przepisu" });
     });
+=======
+    .delete(`/api/recipes/${recipe_id}`, config)
+    .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
+    .catch((e) => console.log(e.response.data));
+>>>>>>> master
 };
 
 function formatResponse(data, getState) {
@@ -372,7 +378,7 @@ function formatResponse(data, getState) {
 const createRecipe = (data) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-    .post("/recipes/", data, config)
+    .post("/api/recipes/", data, config)
     .then((r) => {
       console.log(formatResponse(r.data, getState));
       dispach({
@@ -399,7 +405,7 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios({
     method: method,
-    url: `/recipes/${recipe_id}/`,
+    url: `/api/recipes/${recipe_id}/`,
     data: data,
     headers: config.headers,
   })
@@ -425,10 +431,16 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
 const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
+<<<<<<< HEAD
     .patch(`/recipes/${recipe_id}/`, { is_public: status }, config)
     .then((r) => 
       {
         dispach({
+=======
+    .patch(`/api/recipes/${recipe_id}/`, { is_public: status }, config)
+    .then((r) =>
+      dispach({
+>>>>>>> master
         type: CHANGE_PUBLIC_STATUS,
         payload: { is_public: r.data.is_public, id: recipe_id },
       });
@@ -451,6 +463,7 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   if (edit) {
     const data = axios
+<<<<<<< HEAD
       .put(`/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then( (r) => 
       {
@@ -460,6 +473,14 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
           });
           dispach({ type: NOTIFY, data: "Oceniono przepis" });
       }
+=======
+      .put(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
+      .then( (r) =>
+        dispach({ 
+          type: EDIT_RECIPE_SCORE,
+          payload: { id: recipe_id, score: r.data.score },
+        })
+>>>>>>> master
       )
       .catch((e) => {
         console.log(e.response.data);
@@ -468,7 +489,7 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
       return data;
   } else {
     const data = axios
-      .post(`/recipes/${recipe_id}/vote/`, { score: score }, config)
+      .post(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then((r) =>
         {
           dispach({

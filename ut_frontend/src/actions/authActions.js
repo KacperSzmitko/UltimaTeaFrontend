@@ -10,8 +10,13 @@ const createConfig = (token) => ({
 const login = (email, password) => async (dispach) => {
   let data = { email: email, password: password };
   const response = await axios
+<<<<<<< HEAD
     .post("/token/", data)
     .catch((err) => dispach({ type: LOGIN_FAIL, data: err.response }));
+=======
+    .post("/api/token/", data)
+    .catch((err) => err.response);
+>>>>>>> master
   dispach({
     type: LOGIN,
     payload: { token: response.data.access, refresh: response.data.refresh },
@@ -23,6 +28,7 @@ const login = (email, password) => async (dispach) => {
 
 const register = (data) => (dispatch) => {
   axios
+<<<<<<< HEAD
     .post("/user/", data)
     .then(() => dispatch({ type: REGISTER }))
     .catch((err) => {
@@ -40,21 +46,26 @@ const register = (data) => (dispatch) => {
         }
       }
     });
+=======
+    .post("/api/user/", data)
+    .then(() => dispach({ type: REGISTER }))
+    .catch((err) => console.log(err.response.data));
+>>>>>>> master
 };
 
 const reset_password = (data) => (dispach) => {
-  axios.post("/password_reset/", data).catch((e) => {});
+  axios.post("/api/password_reset/", data).catch((e) => {});
 };
 
 const check_token = (data) => {
   return axios
-    .get("/check_token/", createConfig(data))
+    .get("/api/check_token/", createConfig(data))
     .catch((e) => e.response);
 };
 
 const refresh_token = (data) => (dispach) => {
   axios
-    .post("/token/refresh/", data)
+    .post("/api/token/refresh/", data)
     .then((response) =>{
       dispach({
         type: REFRESH_TOKEN,
