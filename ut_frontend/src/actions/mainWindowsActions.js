@@ -30,8 +30,11 @@ const updateContainers = () => async (dispach, getState) => {
     .get("/api/machine/", config)
     .then((response) => response.data[0].water_container_weight)
     .catch((e) => {
-      dispach({ type: EXPIRED_TOKEN });
-      dispach(refresh_token({ refresh: getState().auth.refresh }));
+      console.log(e);
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
     });
   if (water_container === undefined) return;
   axios
@@ -130,20 +133,19 @@ const getTeas = () => (dispach, getState) => {
 
 const getMachine = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
-    axios
-      .get("/api/machine/", config)
-      .then((response) => {
-        dispach({ type: FETCH_MACHINE, payload: response.data[0] });
-      })
-      .catch((e) => {
-        if (e.response.status === 401 && !getState().auth.tokenExpired) {
-          dispach({ type: EXPIRED_TOKEN });
-          dispach(refresh_token({ refresh: getState().auth.refresh }));
-        }
-        console.log(e.response.data);
-      });
-}
-
+  axios
+    .get("/api/machine/", config)
+    .then((response) => {
+      dispach({ type: FETCH_MACHINE, payload: response.data[0] });
+    })
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
+};
 
 /**
  *
@@ -179,7 +181,12 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
         dispach({ type: FETCH_PUBLIC_RECIPES, payload: response.data });
         return response.data;
       })
-      .catch((e) => []);
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+      });
   } else {
     response = axios
       .get("/api/public_recipes/", config)
@@ -187,7 +194,12 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
         dispach({ type: FETCH_PUBLIC_RECIPES, payload: response.data });
         return response.data;
       })
-      .catch((e) => []);
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+      });
   }
   return response;
 };
@@ -257,16 +269,23 @@ const changeContainers =
  *
  * @param {*} recipe_id Id of recipe that user want to make
  */
-const makeTea = (recipe_id) => (dispach, getState) => {
+const makeTea = (recipe) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
-  if (getState().main.making_recipe !== null){
+  if (getState().main.making_recipe !== null) {
     console.log("Tea is alredy in progress");
     return;
   }
-    axios
-      .post("/api/send_recipe/", { id: recipe_id }, config)
-      .then(() => dispach({ type: MAKE_TEA, payload: recipe_id }))
-      .catch((e) => console.log(e.response.data));
+  console.log(recipe);
+  axios
+    .post("/api/send_recipe/", recipe, config)
+    .then(() => dispach({ type: MAKE_TEA, payload: recipe.id }))
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 /**
@@ -298,7 +317,13 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
         payload: { is_favourite: r.data.is_favourite, id: recipe_id },
       })
     )
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 /**
@@ -311,7 +336,13 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   axios
     .delete(`/api/recipes/${recipe_id}`, config)
     .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 function formatResponse(data, getState) {
@@ -339,7 +370,13 @@ const createRecipe = (data) => (dispach, getState) => {
         payload: formatResponse(r.data, getState),
       });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 /**
@@ -363,7 +400,13 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
         payload: { id: recipe_id, data: formatResponse(r.data, getState) },
       });
     })
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 /**
@@ -381,7 +424,13 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
         payload: { is_public: r.data.is_public, id: recipe_id },
       })
     )
-    .catch((e) => console.log(e.response.data));
+    .catch((e) => {
+      if (e.response.status === 401 && !getState().auth.tokenExpired) {
+        dispach({ type: EXPIRED_TOKEN });
+        dispach(refresh_token({ refresh: getState().auth.refresh }));
+      }
+      console.log(e.response.data);
+    });
 };
 
 /**
@@ -396,14 +445,20 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
   if (edit) {
     const data = axios
       .put(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
-      .then( (r) =>
-        dispach({ 
+      .then((r) =>
+        dispach({
           type: EDIT_RECIPE_SCORE,
           payload: { id: recipe_id, score: r.data.score },
         })
       )
-      .catch((e) => console.log(e.response.data));
-      return data;
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+        console.log(e.response.data);
+      });
+    return data;
   } else {
     const data = axios
       .post(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
@@ -413,10 +468,15 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
           payload: { id: recipe_id, score: r.data.score },
         })
       )
-      .catch((e) => console.log(e.response.data));
-      return data;
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+        console.log(e.response.data);
+      });
+    return data;
   }
-
 };
 
 export {

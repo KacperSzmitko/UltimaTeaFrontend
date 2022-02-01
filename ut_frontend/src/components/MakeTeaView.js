@@ -5,20 +5,23 @@ import { useDispatch } from "react-redux";
 import { makeTea } from "../actions/mainWindowsActions";
 import { useSelector } from "react-redux";
 
-
 var classNames = require("classnames");
 
 function MakeTea() {
   const btnClasses = classNames("submit_btn");
   const submitBtnContainerClasses = classNames("");
   const dispach = useDispatch();
-  const selectedRecipe = useSelector((state) => state.main.selected_recipe);
-
-
+  const selectedRecipeId = useSelector((state) => state.main.selected_recipe);
+  const selectedRecipe = useSelector((state) =>
+    state.main.recipes.find((recipe) =>
+      selectedRecipeId !== null ? recipe.id === selectedRecipeId : null
+    )
+  );
 
   function prepareTea() {
-    if (selectedRecipe === null) {
+    if (selectedRecipeId === null) {
       console.log("Wybierz recepturę którą chcesz przyrządzić");
+      // TODO
     } else {
       dispach(makeTea(selectedRecipe));
     }
