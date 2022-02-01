@@ -10,13 +10,8 @@ const createConfig = (token) => ({
 const login = (email, password) => async (dispach) => {
   let data = { email: email, password: password };
   const response = await axios
-<<<<<<< HEAD
-    .post("/token/", data)
-    .catch((err) => dispach({ type: LOGIN_FAIL, data: err.response }));
-=======
     .post("/api/token/", data)
     .catch((err) => err.response);
->>>>>>> master
   dispach({
     type: LOGIN,
     payload: { token: response.data.access, refresh: response.data.refresh },
@@ -28,8 +23,7 @@ const login = (email, password) => async (dispach) => {
 
 const register = (data) => (dispatch) => {
   axios
-<<<<<<< HEAD
-    .post("/user/", data)
+    .post("/api/user/", data)
     .then(() => dispatch({ type: REGISTER }))
     .catch((err) => {
       dispatch({ type: REGISTER_FAIL, data: err.response.data });
@@ -46,11 +40,6 @@ const register = (data) => (dispatch) => {
         }
       }
     });
-=======
-    .post("/api/user/", data)
-    .then(() => dispach({ type: REGISTER }))
-    .catch((err) => console.log(err.response.data));
->>>>>>> master
 };
 
 const reset_password = (data) => (dispach) => {

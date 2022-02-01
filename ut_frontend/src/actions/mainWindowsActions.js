@@ -343,8 +343,7 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
 const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-<<<<<<< HEAD
-    .delete(`/recipes/${recipe_id}`, config)
+    .delete(`/api/recipes/${recipe_id}`, config)
     .then((r) => {
       dispach({ type: DELETE_RECIPE, payload: recipe_id });
       dispach({ type: NOTIFY, data: "Przepis został usunięty" });
@@ -353,11 +352,6 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
       console.log(e.response.data);
       dispach({ type: NOTIFY, data: "Nie udało się usunąć przepisu" });
     });
-=======
-    .delete(`/api/recipes/${recipe_id}`, config)
-    .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
-    .catch((e) => console.log(e.response.data));
->>>>>>> master
 };
 
 function formatResponse(data, getState) {
@@ -431,16 +425,10 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
 const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
-<<<<<<< HEAD
-    .patch(`/recipes/${recipe_id}/`, { is_public: status }, config)
+    .patch(`/api/recipes/${recipe_id}/`, { is_public: status }, config)
     .then((r) => 
       {
         dispach({
-=======
-    .patch(`/api/recipes/${recipe_id}/`, { is_public: status }, config)
-    .then((r) =>
-      dispach({
->>>>>>> master
         type: CHANGE_PUBLIC_STATUS,
         payload: { is_public: r.data.is_public, id: recipe_id },
       });
@@ -463,8 +451,7 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   if (edit) {
     const data = axios
-<<<<<<< HEAD
-      .put(`/recipes/${recipe_id}/vote/`, { score: score }, config)
+      .put(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then( (r) => 
       {
           dispach({ 
@@ -473,14 +460,6 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
           });
           dispach({ type: NOTIFY, data: "Oceniono przepis" });
       }
-=======
-      .put(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
-      .then( (r) =>
-        dispach({ 
-          type: EDIT_RECIPE_SCORE,
-          payload: { id: recipe_id, score: r.data.score },
-        })
->>>>>>> master
       )
       .catch((e) => {
         console.log(e.response.data);
