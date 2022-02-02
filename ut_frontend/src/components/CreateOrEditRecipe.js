@@ -66,14 +66,18 @@ function CreateOrEditRecipe({ make_tea = false }) {
       e.stopPropagation();
     }
     if (make_tea) {
-      let tempRecipe = {...makingRecipe};
+      let tempRecipe = { ...makingRecipe };
       if (ing1 !== -1 && ing1Ammonut !== null) {
-          let i = ingredients.find((ing) => ing.id === ing1);
-          tempRecipe.ingredients[0] = { ingredient: i, ammount: ing1Ammonut };
+        let i = ingredients.find((ing) => ing.id === ing1);
+        let recipeIng = [...tempRecipe.ingredients];
+        recipeIng[0] = { ingredient: i, ammount: ing1Ammonut };
+        tempRecipe.ingredients = recipeIng;
       }
       if (ing2 !== -1 && ing2Ammonut !== null) {
         let i = ingredients.find((ing) => ing.id === ing2);
-        tempRecipe.ingredients[0] = { ingredient: i, ammount: ing2Ammonut };
+        let recipeIng = [...tempRecipe.ingredients];
+        recipeIng[1] = { ingredient: i, ammount: ing2Ammonut };
+        tempRecipe.ingredients = recipeIng;
       }
       if (makingRecipe.tea_portion !== water) tempRecipe.tea_portion = water;
       if (makingRecipe.tea_type.id !== tea) 
