@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/ut_frontend/node_modules
+/ut_frontend/package.json
+/ut_frontend/package-lock.json

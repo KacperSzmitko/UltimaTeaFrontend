@@ -2,11 +2,19 @@ import React from "react";
 import { BsFillTrashFill } from "react-icons/bs";
 import { AiFillHeart, AiOutlineHeart, AiOutlineEdit } from "react-icons/ai";
 import { MdPublicOff, MdPublic } from "react-icons/md";
+import { SiGitea } from "react-icons/si";
 import { IconContext } from "react-icons";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { favouritesEdit, deleteOwnRecipe, changePublicStatus } from "../actions/mainWindowsActions";
-import { CHANGE_EDIT_TAB_STATUS } from "../actions/types";
+import {
+  favouritesEdit,
+  deleteOwnRecipe,
+  changePublicStatus,
+} from "../actions/mainWindowsActions";
+import {
+  CHANGE_EDIT_TAB_STATUS,
+  CHANGE_MAKE_TEA_TAB_STATUS,
+} from "../actions/types";
 
 var classNames = require("classnames");
 
@@ -40,6 +48,13 @@ function EditIconSet({
     });
   }
 
+  function onMakeTeaClick() {
+    dispach({
+      type: CHANGE_MAKE_TEA_TAB_STATUS,
+      payload: { status: true, id: recipeId },
+    });
+  }
+
   function onPublicClick() {
     dispach(changePublicStatus(recipeId, !is_public));
   }
@@ -59,17 +74,20 @@ function EditIconSet({
           <AiOutlineEdit />
         </div>
         <div className="icon_container" onClick={() => onTrashClick()}>
-          <BsFillTrashFill color="grey" />
+          <BsFillTrashFill color="black" />
         </div>
         {is_public ? (
           <div className="icon_container" onClick={() => onPublicClick()}>
-            <MdPublicOff />
+            <MdPublic />
           </div>
         ) : (
           <div className="icon_container" onClick={() => onPublicClick()}>
-            <MdPublic />
+            <MdPublicOff />
           </div>
         )}
+        <div className="icon_container" onClick={() => onMakeTeaClick()}>
+          <SiGitea />
+        </div>
       </IconContext.Provider>
     </div>
   );
