@@ -4,6 +4,8 @@ import {
   REGISTER,
   REFRESH_TOKEN,
   EXPIRED_TOKEN,
+  REGISTER_FAIL,
+  LOGIN_FAIL,
 } from "../actions/types";
 
 const initialState = {
@@ -21,12 +23,13 @@ const reducer = function (state = initialState, action) {
         token: action.payload.token,
         refresh: action.payload.refresh,
         isLoged: true,
-        tokenExpired: false,
+        tokenExpired: false
       };
     case REGISTER:
-      return { ...state };
+      console.log("Token refreshed");
+      return { ...state,};
     case LOGOUT:
-      return { ...state, token: "", refresh: "", isLoged: false };
+      return { ...state, token: "", refresh: "", isLoged: false, notification:"Wylogowano" };
     case REFRESH_TOKEN:
       console.log("Token refreshed");
       return {
@@ -41,6 +44,10 @@ const reducer = function (state = initialState, action) {
         ...state,
         tokenExpired: true,
       };
+    case REGISTER_FAIL:
+      return { ...state };
+    case LOGIN_FAIL:
+      return { ...state, notification: "Niepoprawny login lub hasło" };
     default:
       return state;
   }

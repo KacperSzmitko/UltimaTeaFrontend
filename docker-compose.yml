@@ -5,10 +5,12 @@ services:
     build: ./ut_frontend
     ports:
       - "80:3000"
+    volumes:
+      - ./ut_frontend/src:/app/src
   nginx:
     build: ./nginx
     ports:
-      - "9000:80"
+      - "8001:80"
     depends_on:
       - ut_frontend
 

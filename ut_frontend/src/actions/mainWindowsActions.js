@@ -18,6 +18,7 @@ import {
   FETCH_PUBLIC_RECIPES,
   EDIT_RECIPE_SCORE,
   FETCH_MACHINE,
+  NOTIFY,
 } from "../actions/types";
 import { createConfig, refresh_token } from "./authActions";
 
@@ -131,21 +132,24 @@ const getTeas = () => (dispach, getState) => {
     });
 };
 
+//dev nie ma maszyny
 const getMachine = () => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
-  axios
-    .get("/api/machine/", config)
-    .then((response) => {
-      dispach({ type: FETCH_MACHINE, payload: response.data[0] });
-    })
-    .catch((e) => {
-      if (e.response.status === 401 && !getState().auth.tokenExpired) {
-        dispach({ type: EXPIRED_TOKEN });
-        dispach(refresh_token({ refresh: getState().auth.refresh }));
-      }
-      console.log(e.response.data);
-    });
-};
+    axios
+      .get("/api/machine/", config)
+      .then((response) => {
+        dispach({ type: FETCH_MACHINE, payload: response.data[0] });
+      })
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+        console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Maszyna nie istnieje" });
+      });
+}
+
 
 /**
  *
@@ -204,6 +208,7 @@ const getPublicRecipes = (url, recipes_per_page) => (dispach, getState) => {
   return response;
 };
 
+//dev składnik zmieniony, lub nie
 /**
  * Modify tea or ingredient in container
  * @param {[{}]} tea_containers List of tea containers to modify. Single elemtnt is {id: data}
@@ -213,6 +218,7 @@ const changeContainers =
   (tea_containers, ing_containers) => (dispach, getState) => {
     let config = createConfig(getState().auth.token);
     let requests = [];
+    var error = false;
     // Update all tea containers
     for (const tea_container of tea_containers) {
       requests.push(
@@ -223,10 +229,12 @@ const changeContainers =
             config
           )
           .then((r) =>
-            dispach({
-              type: UPDATE_TEA_CONTAINERS,
-              payload: { id: tea_container.id, tea: r.data },
-            })
+            {
+              dispach({
+                type: UPDATE_TEA_CONTAINERS,
+                payload: { id: tea_container.id, tea: r.data },
+              });
+            }
           )
           .catch((e) => {
             if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -234,6 +242,8 @@ const changeContainers =
               dispach(refresh_token({ refresh: getState().auth.refresh }));
             }
             console.log(e.response.data);
+            dispach({ type: NOTIFY, data: "Nie udało się zaktualizować zawartości pojemników" });
+            error = true;
           })
       );
     }
@@ -262,9 +272,14 @@ const changeContainers =
           })
       );
     }
+    
+    if (!error)
+      dispach({ type: NOTIFY, data: "Zawartość pojemników została zaktualizowana" });
+
     axios.all(requests);
   };
 
+//dev zlecono albo nie robienie herbaty
 /**
  *
  * @param {*} recipe_id Id of recipe that user want to make
@@ -275,17 +290,20 @@ const makeTea = (recipe) => (dispach, getState) => {
     console.log("Tea is alredy in progress");
     return;
   }
-  console.log(recipe);
-  axios
-    .post("/api/send_recipe/", recipe, config)
-    .then(() => dispach({ type: MAKE_TEA, payload: recipe.id }))
-    .catch((e) => {
-      if (e.response.status === 401 && !getState().auth.tokenExpired) {
-        dispach({ type: EXPIRED_TOKEN });
-        dispach(refresh_token({ refresh: getState().auth.refresh }));
-      }
-      console.log(e.response.data);
-    });
+    axios
+      .post("/api/send_recipe/", recipe, config))
+      .then(() => {
+        dispach({ type: MAKE_TEA, payload: recipe.id });
+        dispach({ type: NOTIFY, data: "Robienie herbaty zostało zlecone" });
+      })
+      .catch((e) => {
+        if (e.response.status === 401 && !getState().auth.tokenExpired) {
+          dispach({ type: EXPIRED_TOKEN });
+          dispach(refresh_token({ refresh: getState().auth.refresh }));
+        }
+        console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Nie udało się zlecić robienia herbaty" });
+      });
 };
 
 /**
@@ -296,6 +314,7 @@ const editSelectedRecipe = (recipe_id) => (dispach) => {
   dispach({ type: EDIT_SELECTED_RECIPE, payload: recipe_id });
 };
 
+//dev ulubione
 /**
  * Change is_favourite filed of recipe
  * @param {int} recipe_id Id of recipe do edit
@@ -312,10 +331,16 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
       config
     )
     .then((r) =>
-      dispach({
-        type: FAVOURITES_EDIT,
-        payload: { is_favourite: r.data.is_favourite, id: recipe_id },
-      })
+      {
+        dispach({
+          type: FAVOURITES_EDIT,
+          payload: { is_favourite: r.data.is_favourite, id: recipe_id },
+        });
+        if(is_favourite)
+          dispach({ type: NOTIFY, data: "Dodano przepis do ulubionych" });
+        else
+          dispach({ type: NOTIFY, data: "Usunięto przepis z ulubionych" });
+      }
     )
     .catch((e) => {
       if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -323,9 +348,14 @@ const favouritesEdit = (recipe_id, is_favourite) => (dispach, getState) => {
         dispach(refresh_token({ refresh: getState().auth.refresh }));
       }
       console.log(e.response.data);
+      if(is_favourite)
+          dispach({ type: NOTIFY, data: "Wystąpił błąd podczas dodawania przepisu do ulubionych" });
+        else
+          dispach({ type: NOTIFY, data: "Wystąpił błąd podczas usuwania przepisu z ulubionych" });
     });
 };
 
+//dev usuwanie
 /**
  * Delete own recipe
  * @param {*} recipe_id
@@ -335,13 +365,17 @@ const deleteOwnRecipe = (recipe_id) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .delete(`/api/recipes/${recipe_id}`, config)
-    .then((r) => dispach({ type: DELETE_RECIPE, payload: recipe_id }))
+    .then((r) => {
+      dispach({ type: DELETE_RECIPE, payload: recipe_id });
+      dispach({ type: NOTIFY, data: "Przepis został usunięty" });
+    })
     .catch((e) => {
       if (e.response.status === 401 && !getState().auth.tokenExpired) {
         dispach({ type: EXPIRED_TOKEN });
         dispach(refresh_token({ refresh: getState().auth.refresh }));
       }
       console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się usunąć przepisu" });
     });
 };
 
@@ -359,6 +393,7 @@ function formatResponse(data, getState) {
   };
 }
 
+//dev create recipe
 const createRecipe = (data) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
@@ -369,6 +404,7 @@ const createRecipe = (data) => (dispach, getState) => {
         type: CREATE_RECIPE,
         payload: formatResponse(r.data, getState),
       });
+      dispach({ type: NOTIFY, data: "Przepis został stworzony" });
     })
     .catch((e) => {
       if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -376,9 +412,11 @@ const createRecipe = (data) => (dispach, getState) => {
         dispach(refresh_token({ refresh: getState().auth.refresh }));
       }
       console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się stworzyć przepisu" });
     });
 };
 
+//dev recipe edit
 /**
  *
  * @param {*} data
@@ -399,6 +437,7 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
         type: EDIT_RECIPE,
         payload: { id: recipe_id, data: formatResponse(r.data, getState) },
       });
+      dispach({ type: NOTIFY, data: "Nowa wersja przepisu została zapisana" });
     })
     .catch((e) => {
       if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -406,9 +445,11 @@ const editRecipe = (data, recipe_id, method) => (dispach, getState) => {
         dispach(refresh_token({ refresh: getState().auth.refresh }));
       }
       console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się zedytować przepisu" });
     });
 };
 
+//dev jak się nie uda
 /**
  *
  * @param {*} recipe_id
@@ -418,8 +459,9 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
   let config = createConfig(getState().auth.token);
   axios
     .patch(`/api/recipes/${recipe_id}/`, { is_public: status }, config)
-    .then((r) =>
-      dispach({
+    .then((r) => 
+      {
+        dispach({
         type: CHANGE_PUBLIC_STATUS,
         payload: { is_public: r.data.is_public, id: recipe_id },
       })
@@ -430,9 +472,11 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
         dispach(refresh_token({ refresh: getState().auth.refresh }));
       }
       console.log(e.response.data);
+      dispach({ type: NOTIFY, data: "Nie udało się zmienić statusu przepisu" });
     });
 };
 
+//dev głosowanie
 /**
  *
  * @param {*} recipe_id
@@ -446,27 +490,33 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
     const data = axios
       .put(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then((r) =>
-        dispach({
+      {
+        dispach({ 
           type: EDIT_RECIPE_SCORE,
           payload: { id: recipe_id, score: r.data.score },
-        })
-      )
+        });
+        dispach({ type: NOTIFY, data: "Oceniono przepis" });
+      })
       .catch((e) => {
         if (e.response.status === 401 && !getState().auth.tokenExpired) {
           dispach({ type: EXPIRED_TOKEN });
           dispach(refresh_token({ refresh: getState().auth.refresh }));
         }
         console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Nie udało się ocenić przepisu" });
       });
     return data;
   } else {
     const data = axios
       .post(`/api/recipes/${recipe_id}/vote/`, { score: score }, config)
       .then((r) =>
-        dispach({
-          type: EDIT_RECIPE_SCORE,
-          payload: { id: recipe_id, score: r.data.score },
-        })
+        {
+          dispach({
+            type: EDIT_RECIPE_SCORE,
+            payload: { id: recipe_id, score: r.data.score },
+          });
+          dispach({ type: NOTIFY, data: "Oceniono przepis" });
+        }
       )
       .catch((e) => {
         if (e.response.status === 401 && !getState().auth.tokenExpired) {
@@ -474,6 +524,7 @@ const recipeVote = (recipe_id, score, edit) => (dispach, getState) => {
           dispach(refresh_token({ refresh: getState().auth.refresh }));
         }
         console.log(e.response.data);
+        dispach({ type: NOTIFY, data: "Nie udało się ocenić przepisu" });
       });
     return data;
   }

@@ -1,4 +1,4 @@
-import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN } from "./types";
+import { LOGIN, REGISTER, LOGOUT, REFRESH_TOKEN, REGISTER_FAIL, LOGIN_FAIL, NOTIFY } from "./types";
 import axios from "axios";
 
 const createConfig = (token) => ({
@@ -21,11 +21,25 @@ const login = (email, password) => async (dispach) => {
   return response;
 };
 
-const register = (data) => (dispach) => {
+const register = (data) => (dispatch) => {
   axios
     .post("/api/user/", data)
-    .then(() => dispach({ type: REGISTER }))
-    .catch((err) => console.log(err.response.data));
+    .then(() => dispatch({ type: REGISTER }))
+    .catch((err) => {
+      dispatch({ type: REGISTER_FAIL, data: err.response.data });
+
+      for(var err_name in err.response.data) {
+        if (err_name === "email") {
+          dispatch({ type: NOTIFY, data: err.response.data[err_name]});
+        }
+        else if (err_name === "machine") {
+          dispatch({ type: NOTIFY, data: err.response.data[err_name]});
+        }
+        else {
+          dispatch({ type: NOTIFY, data: "Server connection error" });
+        }
+      }
+    });
 };
 
 const reset_password = (data) => (dispach) => {
