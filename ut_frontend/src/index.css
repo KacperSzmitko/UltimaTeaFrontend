@@ -805,7 +805,10 @@ html {
   width: 50%;
   background-color: #8FB554AA;
   border-radius: 0 0 0 40px;
-  animation: morphingbEdgesSmall 10s infinite;
+  animation-name: fromPoint, morphingbEdgesSmall;
+  animation-duration: 3s, 10s;
+  animation-delay: 0s, 3s;
+  animation-iteration-count: 1, infinite;
 }
 
 @keyframes morphingbEdgesSmall {
@@ -834,7 +837,10 @@ html {
   background-color: #016316AA;
   border-radius: 2%;
   border-radius: 0 0 0 40px;
-  animation: morphingbEdgesSmall 10s infinite;
+  animation-name: fromPoint, morphingbEdgesSmall;
+  animation-duration: 3s, 10s;
+  animation-delay: 0s, 3s;
+  animation-iteration-count: 1, infinite;
 }
 
 .homeSignboard {
@@ -1015,3 +1021,15 @@ html {
 }
 
 
+@keyframes fromPoint {
+
+  0% {
+    border-radius: 100%;
+  }
+
+  75% {
+    border-radius: 5%;
+
+  } 
+  
+}
