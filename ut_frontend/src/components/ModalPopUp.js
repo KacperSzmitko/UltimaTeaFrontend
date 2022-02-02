@@ -3,7 +3,7 @@ import {Modal, Button, Alert} from 'react-bootstrap'
 import { useSelector, useDispatch } from "react-redux";
 import { clearNotifications, addNotification } from "../actions/utilActions";
 
-const POPUP_TIME = 50000;
+const POPUP_TIME = 5000;
 
 export default function ModalPopUp() {
     const [show, setShow] = useState(false);
