@@ -20,9 +20,15 @@ function App() {
           path="/"
           element={
             <>
-              <LoginForm />
-              <RegisterForm />
-              <Link to="reset_password">Reset password</Link>
+              <div className="homeSignboard">
+                <div className="logo">
+                  UltimaTea
+                </div>
+              </div>
+              <div className="homeContainer">
+                <LoginForm />
+                <RegisterForm />
+              </div>
             </>
           }
         />

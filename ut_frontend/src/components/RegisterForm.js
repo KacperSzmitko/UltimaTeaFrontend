@@ -154,10 +154,10 @@ export class RegisterForm extends Component {
 
   render() {
     return (
-      <div>
+      <div className="registerForm">
         <Form onSubmit={this.onSubmit}>
           <Form.Group className="mb-3" controlId="Register.EmailInput">
-            <Form.Label>Adres e-mail</Form.Label>
+            <Form.Label className="inputLabel">Adres e-mail</Form.Label>
             <Form.Control
               type="email"
               placeholder="name@example.com"
@@ -165,7 +165,7 @@ export class RegisterForm extends Component {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.MachineInput">
-            <Form.Label>Id maszyny</Form.Label>
+            <Form.Label className="inputLabel">Id maszyny</Form.Label>
             <Form.Control
               type="text"
               placeholder="Id twojej maszyny"
@@ -173,15 +173,18 @@ export class RegisterForm extends Component {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.PasswordInput">
-            <Form.Label>Hasło</Form.Label>
+            <Form.Label className="inputLabel">Hasło</Form.Label>
             <Form.Control type="password" onChange={this.onPasswordChange} />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.RePasswordInput">
-            <Form.Label>Hasło</Form.Label>
+            <Form.Label className="inputLabel">Hasło</Form.Label>
             <Form.Control type="password" onChange={this.onRePasswordChange} />
           </Form.Group>
           <div dangerouslySetInnerHTML={{__html: this.userInputErrors}}></div>
-          <Button type="submit">Zarejestruj się</Button>
+          <div className="centerInRow">
+            <Button type="submit" className="registerButton" className="registerButton">Zarejestruj się</Button>
+          </div>
+          
         </Form>
       </div>
     );

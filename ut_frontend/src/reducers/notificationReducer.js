@@ -10,7 +10,8 @@ import {
   const reducer = function (state = initialState, action) {
     switch (action.type) {
       case NOTIFY:
-        var newNotifications = state.notifications.concat(action.data)
+        var newNotifications = state.notifications.concat(action.data);
+        var newVariant = state.notifications.variant;
 
         if (newNotifications.length > 2)
         {
@@ -18,14 +19,13 @@ import {
         }
 
         if(action.variant) {
-          console.log("variant exists")
-
+          newVariant = action.variant;
         }
       
         return {
           ...state,
           notifications: newNotifications,
-          variant: "danger"
+          variant: newVariant,
         };
       default:
         return state;

@@ -793,3 +793,76 @@ html {
 .no_margin_bot{
   margin-bottom: 0;
 }
+
+.homeContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.loginForm {
+  margin: 2%;
+  padding: 1%;
+  width: 50%;
+  background-color: #8FB554AA;
+  border-radius: 2%;
+}
+
+.registerForm {
+  margin: 2%;
+  padding: 1%;
+  width: 50%;
+  background-color: #016316AA;
+  border-radius: 2%;
+}
+
+.homeSignboard {
+  margin: 2%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.logo {
+  padding: 2%;
+  font-family: 'Yellowtail', cursive;
+  font-size: 110px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.buttonsLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.inputLabel {
+  margin-left:5%;
+  background-color: rgba(235, 255, 235, 0.2);
+  width: 20%;
+  border-radius: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.centerInRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.loginButton {
+  width: 70%;
+}
+
+.registerButton {
+  width: 70%;
+}
+
+.loginFormForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%
+}
