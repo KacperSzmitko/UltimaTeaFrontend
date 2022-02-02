@@ -3,7 +3,7 @@ import {Modal, Button, Alert} from 'react-bootstrap'
 import { useSelector, useDispatch } from "react-redux";
 import { clearNotifications, addNotification } from "../actions/utilActions";
 
-const POPUP_TIME = 5000;
+const POPUP_TIME = 50000;
 
 export default function ModalPopUp() {
     const [show, setShow] = useState(false);
@@ -35,6 +35,10 @@ export default function ModalPopUp() {
     const mainNotification = useSelector(
         (state) => state.main.notification
     );
+
+    const nVariant = useSelector(
+        (state) => state.notifications.variant
+    );
     
     useEffect(() => {
         if(authNotification instanceof String || typeof authNotification === 'string')
@@ -48,6 +52,7 @@ export default function ModalPopUp() {
 
 
     useEffect(() => {
+
         if (!show && notifications.length !== 0){
             handleShow();
         }
@@ -64,30 +69,15 @@ export default function ModalPopUp() {
 
     return (
         <>
-            <Alert show={show} className="alertShow" variant="success">
-                {notifications}
+            <Alert variant={nVariant} show={show} className="alertShow">
+                {notifications.map(message=> (
+                    <div className="oneMessage" key={message}>
+                        {message}
+                    </div>
+                ))}
             </Alert>
         </>
     );
-
-    // return (
-    //     <>
-    //     <Button variant="primary" onClick={handleShow}>
-    //         Show notifications
-    //     </Button>
-
-    //     <Modal show={show} onHide={handleClose} className="modalShow" backdropClassName="alertShow">
-    //         <Modal.Header closeButton>
-    //         </Modal.Header>
-    //         <Modal.Body>{notifications}</Modal.Body>
-    //         <Modal.Footer>
-    //         <Button variant="secondary" onClick={handleClose}>
-    //             Zamknij
-    //         </Button>
-    //         </Modal.Footer>
-    //     </Modal>
-    //     </>
-    // );
 }
 
 
