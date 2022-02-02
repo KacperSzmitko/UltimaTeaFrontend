@@ -12,9 +12,14 @@ function EditRecipes() {
   const editRecipeTabActive = useSelector(
     (state) => state.main.edit_tab_active
   );
+  const makeTeaTabActive = useSelector(
+    (state) => state.main.make_tea_tab_active
+  );
 
   const viewClasses = classNames(
-    { blured: createRecipeTabActive || editRecipeTabActive },
+    {
+      blured: createRecipeTabActive || editRecipeTabActive || makeTeaTabActive,
+    },
     "no_margin",
     "view_with_filters"
   );
@@ -26,6 +31,8 @@ function EditRecipes() {
       </div>
       {createRecipeTabActive || editRecipeTabActive ? (
         <CreateOrEditRecipe />
+      ) : makeTeaTabActive ? (
+        <CreateOrEditRecipe make_tea={true} />
       ) : null}
     </div>
   );

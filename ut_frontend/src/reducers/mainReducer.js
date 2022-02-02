@@ -14,11 +14,13 @@ import {
   EDIT_RECIPE,
   CHANGE_EDIT_TAB_STATUS,
   CHANGE_CREATE_TAB_STATUS,
+  CHANGE_MAKE_TEA_TAB_STATUS,
   CHANGE_PUBLIC_STATUS,
   FETCH_PUBLIC_RECIPES,
   EDIT_RECIPE_SCORE,
   FETCH_MACHINE,
   TEA_DONE,
+  MAKE_SELECTED_RECIPE,
 } from "../actions/types";
 
 const initialState = {
@@ -60,6 +62,7 @@ const initialState = {
   selected_recipe: null,
   create_tab_active: false,
   edit_tab_active: false,
+  make_tea_tab_active: false,
   editing_recipe: null,
   fetched_recipe_page: {
     results: [],
@@ -67,6 +70,7 @@ const initialState = {
     previous: null,
   },
   making_recipe: null,
+  make_selected_recipe: null,
 };
 
 const reducer = function (state = initialState, action) {
@@ -119,6 +123,14 @@ const reducer = function (state = initialState, action) {
         ...state,
         create_tab_active: action.payload.status,
         editing_recipe: null,
+      };
+    case CHANGE_MAKE_TEA_TAB_STATUS:
+      return {
+        ...state,
+        make_tea_tab_active: action.payload.status,
+        make_selected_recipe: state.recipes.find(
+          (recipe) => recipe.id === action.payload.id
+        ),
       };
     case UPDATE_CONTAINERS:
       return {

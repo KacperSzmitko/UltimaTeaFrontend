@@ -4,7 +4,7 @@ import { getMachine } from "../actions/mainWindowsActions";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { TEA_DONE } from "../actions/types";
-import { keyframes } from "styled-components";
+import StatusDotSet from "./StatusDotSet";
 var classNames = require("classnames");
 
 function Statuses() {
@@ -43,36 +43,52 @@ function Statuses() {
     "machine_status_dot"
   );
 
-  const teaMakingStatusClasses = classNames(
-    "loader"
-  );
-
-    const make_spin = (prev, next) => keyframes`
-    0% {
-        transform : rotate(${prev}0deg)
+  const tea_dots = () => {
+    switch (tea_making_status) {
+      case 1:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet filled_dots={1} />
+            Wysłano przepis
+          </div>
+        );
+      case 2:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet filled_dots={2} />
+            Parzenie
+          </div>
+        );
+      case 3:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet filled_dots={3} />
+            Dodawanie składników
+          </div>
+        );
+      case 4:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet filled_dots={4} />
+            Mieszanie
+          </div>
+        );
+      case 5:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet filled_dots={5} />
+            Herbata gotowa
+          </div>
+        );
+      default:
+        return (
+          <div className="tea_making_status">
+            <StatusDotSet />
+            Oczekiwanie
+          </div>
+        );
     }
-    100% {
-        transform : rotate(${next}deg)
-    }
-`;
-
-    const tea_status_msg = () => {
-        switch (tea_making_status){
-        case 1:
-            return "Wysłano przepis"
-        case 2:
-            return "Parzenie"
-        case 3:
-            return "Dodawanie składników"
-        case 4:
-            return "Mieszanie"
-        case 5:
-            return "Herbata gotowa"
-        default:
-            return "Oczekiwanie"
-    }
-    }
-
+  };
 
   return (
     <div id="statuses">
@@ -80,10 +96,7 @@ function Statuses() {
         <div className={machineStatusClasses}></div>
         Maszyna
       </div>
-      <div className="tea_making_status">
-        <div className={teaMakingStatusClasses}></div>
-        {tea_status_msg()}
-      </div>
+      {tea_dots()}
     </div>
   );
 }
