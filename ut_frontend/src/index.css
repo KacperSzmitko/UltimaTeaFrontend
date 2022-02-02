@@ -790,9 +790,6 @@ html {
 
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(72deg); }
 .no_margin_bot{
   margin-bottom: 0;
 }
