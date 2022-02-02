@@ -291,7 +291,7 @@ const makeTea = (recipe) => (dispach, getState) => {
     return;
   }
     axios
-      .post("/api/send_recipe/", recipe, config))
+      .post("/api/send_recipe/", recipe, config)
       .then(() => {
         dispach({ type: MAKE_TEA, payload: recipe.id });
         dispach({ type: NOTIFY, data: "Robienie herbaty zostało zlecone" });
@@ -465,6 +465,7 @@ const changePublicStatus = (recipe_id, status) => (dispach, getState) => {
         type: CHANGE_PUBLIC_STATUS,
         payload: { is_public: r.data.is_public, id: recipe_id },
       })
+      }
     )
     .catch((e) => {
       if (e.response.status === 401 && !getState().auth.tokenExpired) {
