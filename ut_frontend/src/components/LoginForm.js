@@ -46,7 +46,7 @@ export default function LoginForm(props) {
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Login.PasswordInput">
-            <Form.Label className="inputLabel">Hasło</Form.Label>
+            <Form.Label className="inputLabel inputLabelReset">Hasło</Form.Label>
             <Form.Control type="password" onChange={(e) => onPasswordChange(e)} />
           </Form.Group>
         </div>

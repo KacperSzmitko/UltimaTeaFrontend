@@ -20,10 +20,10 @@ export default function ResetPasswordForm(props) {
     }
 
     return (
-      <div>
-        <Form onSubmit={(e) => onSubmit(e)}>
+      <div className="resetContainer">
+        <Form className="resetForm" onSubmit={(e) => onSubmit(e)}>
           <Form.Group className="mb-3" controlId="ChangePassword.EmailInput">
-            <Form.Label>Adres e-mail</Form.Label>
+            <Form.Label className="inputLabel">Adres e-mail</Form.Label>
             <Form.Control
               type="email"
               placeholder="name@example.com"
@@ -32,7 +32,11 @@ export default function ResetPasswordForm(props) {
           </Form.Group>
           <Button type="submit">Wyślij link autoryzacyjny</Button>
         </Form>
-        <Link to="/">Powrót do strony głównej</Link>
+        <Link to="/">
+          <Button className="returnButton">
+            Powrót do strony głównej
+          </Button>
+        </Link>
       </div>
     );
   }
