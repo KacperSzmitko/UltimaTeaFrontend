@@ -760,10 +760,10 @@ html {
 
   position: absolute !important;
   z-index: 1111 !important;
-  left: -18% !important;
-  bottom: -61px !important;
-  width: 136% !important;
-  height: 61px !important;
+  left: -15vw !important;
+  bottom: -3vw !important;
+  width: 101.5vw !important;
+  height: 3vw !important;
 
   /* position: fixed;
   top: 0;
