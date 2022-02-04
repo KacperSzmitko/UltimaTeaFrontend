@@ -24,7 +24,7 @@ function App() {
             <div className="homeBackground">
               <div className="wallpaperElement downWallpaper">
                   <tbody>
-                    {[...Array(20)].map((x, i) => <ShapeGenerator zIndex={10+i}/>)}
+                    {[...Array(40)].map((x, i) => <ShapeGenerator zIndex={10+i}/>)}
                 </tbody>
               </div>
               <div className="homeWallpaper topWallpaper">
