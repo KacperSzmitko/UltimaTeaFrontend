@@ -23,26 +23,9 @@ function App() {
           element={
             <div className="homeBackground">
               <div className="wallpaperElement downWallpaper">
-                  <ShapeGenerator zIndex={10}/>
-                  <ShapeGenerator zIndex={11}/>
-                  <ShapeGenerator zIndex={12}/>
-                  <ShapeGenerator zIndex={13}/>
-                  <ShapeGenerator zIndex={14}/>
-                  <ShapeGenerator zIndex={15}/>
-                  <ShapeGenerator zIndex={16}/>
-                  <ShapeGenerator zIndex={17}/>
-                  <ShapeGenerator zIndex={18}/>
-                  <ShapeGenerator zIndex={19}/>
-                  <ShapeGenerator zIndex={20}/>
-                  <ShapeGenerator zIndex={21}/>
-                  <ShapeGenerator zIndex={22}/>
-                  <ShapeGenerator zIndex={23}/>
-                  <ShapeGenerator zIndex={24}/>
-                  <ShapeGenerator zIndex={25}/>
-                  <ShapeGenerator zIndex={26}/>
-                  <ShapeGenerator zIndex={27}/>
-                  <ShapeGenerator zIndex={28}/>
-   
+                  <tbody>
+                    {[...Array(20)].map((x, i) => <ShapeGenerator zIndex={10+i}/>)}
+                </tbody>
               </div>
               <div className="homeWallpaper topWallpaper">
                 <div className="homeSignboard topWallpaper">
