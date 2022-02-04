@@ -154,7 +154,7 @@ export class RegisterForm extends Component {
 
   render() {
     return (
-      <div className="registerForm">
+      <div className="registerForm topWallpaper">
         <Form onSubmit={this.onSubmit}>
           <Form.Group className="mb-3" controlId="Register.EmailInput">
             <Form.Label className="inputLabel">Adres e-mail</Form.Label>

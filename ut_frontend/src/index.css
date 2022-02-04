@@ -853,14 +853,16 @@ html {
   justify-content: space-around;
   border-radius: 10px;
 
-  background-color: #F1F1F1;
+  background-color: #F1F1F100;
   animation-name: a0, a1, a2, morphing;
   animation-duration: 2s, 6s, 3s, 11s;
   animation-delay: 0s, 2s, 6s, 0s;
+
+  position: relative;
 }
 
 @keyframes a0 {
-  from {background-color: #F1F1F1;}
+  from {background-color: #F1F1F100;}
 
   to {background-color: #016316aa;}
 }
@@ -874,7 +876,7 @@ html {
 @keyframes a2 {
   from {background-color: #8FB554aa;}
 
-  to {background-color: #F1F1F1;}
+  to {background-color: #F1F1F100;}
 }
 
 @keyframes morphing {
@@ -1032,4 +1034,43 @@ html {
 
   } 
   
+}
+
+.homeBackground {
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.wallpaperElement {
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.homeWallpaper {
+  width: 100%;
+  height: 100%;
+}
+
+.topWallpaper {
+  z-index: 200;
+}
+
+.downWallpaper {
+  z-index: 10;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.wallpaperPolygon {
+  width: 100%;
+  height: 100%;
+  background-color: #F1FFF1;
+
 }

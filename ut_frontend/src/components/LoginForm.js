@@ -34,7 +34,7 @@ export default function LoginForm(props) {
   }
 
   return (
-    <div className="loginForm">
+    <div className="loginForm topWallpaper">
       <Form onSubmit={(e) => onSubmit(e)} className="loginFormForm">
         <div>
           <Form.Group className="mb-3" controlId="Login.EmailInput">
