@@ -10,8 +10,10 @@ import BrowseRecipes from "./components/BrowseRecipesView";
 import EditContainers from "./components/EditContainersView";
 import EditProfile from "./components/EditProfileView";
 import ModalPopUp from "./components/ModalPopUp";
+import ShapeGenerator from "./components/WallpaperShape";
 
 function App() {
+  
   return (
     <div id="main_window">
       {<ModalPopUp />}
@@ -19,11 +21,24 @@ function App() {
         <Route
           path="/"
           element={
-            <>
-              <LoginForm />
-              <RegisterForm />
-              <Link to="reset_password">Reset password</Link>
-            </>
+            <div className="homeBackground">
+              <div className="wallpaperElement downWallpaper">
+                  {/* <tbody>
+                    {[...Array(40)].map((x, i) => <ShapeGenerator zIndex={10+i}/>)}
+                </tbody> */}
+              </div>
+              <div className="homeWallpaper topWallpaper">
+                <div className="homeSignboard topWallpaper">
+                  <div className="logo topWallpaper">
+                      UltimaTea
+                  </div>
+                </div>
+                <div className="homeContainer topWallpaper">
+                  <LoginForm />
+                  <RegisterForm />
+                </div>
+              </div>
+            </div>
           }
         />
         <Route path="reset_password" element={<ResetPasswordForm />} />
@@ -36,6 +51,8 @@ function App() {
         </Route>
         <Route path="*" element={<MainAppStatic redirect={true}/>}></Route>
       </Routes>
+
+    
     </div>
   );
 }
