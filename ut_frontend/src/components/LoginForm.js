@@ -43,17 +43,18 @@ export default function LoginForm(props) {
               type="email"
               placeholder="name@example.com"
               onChange={(e) => onEmailChange(e)}
+              className="inputText"
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Login.PasswordInput">
             <Form.Label className="inputLabel inputLabelReset">Hasło</Form.Label>
-            <Form.Control type="password" onChange={(e) => onPasswordChange(e)} />
+            <Form.Control type="password" onChange={(e) => onPasswordChange(e)} className="inputText"/>
           </Form.Group>
         </div>
 
         <div className="buttonsLine">
           <Link className="homeReset" to="reset_password">
-            <Button type="submit">
+            <Button>
                 Resetuj hasło
             </Button>
           </Link>

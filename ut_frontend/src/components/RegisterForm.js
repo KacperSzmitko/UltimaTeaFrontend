@@ -87,32 +87,36 @@ export class RegisterForm extends Component {
   }
 
   validatePassword() {
+    let passwordSpecialCharacter;
+    let passwordLength;
+    let passwordBigLetter;
+    let passwordDigit;
     if (
       this.state.password.match(
         "(?=.*[?!.!\"#%&'()*+,-./:<>=?@\\[\\]^_{}|~$])"
       ) != null
     ) {
-      var passwordSpecialCharacter = true;
+      passwordSpecialCharacter = true;
     } else {
-      var passwordSpecialCharacter = false;
+      passwordSpecialCharacter = false;
     }
 
     if (this.state.password.length >= PASSSWORD_MIN_LEN) {
-      var passwordLength = true;
+      passwordLength = true;
     } else {
-      var passwordLength = false;
+      passwordLength = false;
     }
 
     if (this.state.password.match("(?=.*[A-Z])")) {
-      var passwordBigLetter = true;
+      passwordBigLetter = true;
     } else {
-      var passwordBigLetter = false;
+      passwordBigLetter = false;
     }
 
     if (this.state.password.match("(?=.*[0-9])")) {
-      var passwordDigit = true;
+      passwordDigit = true;
     } else {
-      var passwordDigit = false;
+      passwordDigit = false;
     }
 
     this.setState(
@@ -162,6 +166,7 @@ export class RegisterForm extends Component {
               type="email"
               placeholder="name@example.com"
               onChange={this.onEmailChange}
+              className="inputText"
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.MachineInput">
@@ -170,17 +175,19 @@ export class RegisterForm extends Component {
               type="text"
               placeholder="Id twojej maszyny"
               onChange={this.onMachineChange}
+              className="inputText"
             />
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.PasswordInput">
             <Form.Label className="inputLabel">Hasło</Form.Label>
-            <Form.Control type="password" onChange={this.onPasswordChange} />
+            <Form.Control type="password" onChange={this.onPasswordChange} className="inputText"/>
           </Form.Group>
           <Form.Group className="mb-3" controlId="Register.RePasswordInput">
             <Form.Label className="inputLabel">Hasło</Form.Label>
-            <Form.Control type="password" onChange={this.onRePasswordChange} />
+            <Form.Control type="password" onChange={this.onRePasswordChange} className="inputText"/>
           </Form.Group>
           <div dangerouslySetInnerHTML={{__html: this.userInputErrors}}></div>
+          <div styles="height: 100%; width: 100%"></div>
           <div className="centerInRow">
             <Button type="submit" className="registerButton" className="registerButton">Zarejestruj się</Button>
           </div>

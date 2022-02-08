@@ -797,6 +797,7 @@ html {
 .homeContainer {
   display: flex;
   flex-direction: row;
+  height: 60%;
 }
 
 .loginForm {
@@ -925,9 +926,9 @@ html {
 
 
 .loginButton {
-	box-shadow: 15px 15px 50px rgba(0,0,0,0.2);
+	/* box-shadow: 15px 15px 50px rgba(0,0,0,0.2); */
 
-  animation: morphingbT 20s infinite;
+  /* animation: morphingbT 0.1s infinite; */
   width: 70%
 }
 
@@ -964,7 +965,8 @@ html {
 
 .registerButton {
   width: 70%;
-  animation: morphingbEdgesSmallFull 15s infinite;
+  margin-top: 3vw !important;
+  /* animation: morphingbEdgesSmallFull 15s infinite; */
 }
 
 @keyframes morphingbEdgesSmallFull {
@@ -1076,4 +1078,12 @@ html {
 
   box-shadow: 0 0 200px 200px #F1F3F1 inset;
 
+}
+
+.inputText {
+  height: 170% !important;
+  width: 70% !important;
+  padding-left: 2% !important;
+  margin-left: 5% !important;
+  animation: inputAnimation 3s infinite;
 }
